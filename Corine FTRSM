@@ -1,0 +1,460 @@
+Print["****************************CORINE FTRSM***************************************"];
+Print[""];
+
+Clear["Global`*"]
+
+Rules={Phi->{0,1/Sqrt[2]*(a*Subscript[\[CapitalTheta], h]+v)},S->1/Sqrt[2]*(a*Subscript[\[CapitalTheta], s]+Subscript[v, s]),X->1/Sqrt[2]*(a*Subscript[\[CapitalTheta], x]+Subscript[v, x])};
+
+T1=Subscript[\[Mu]2, h]Phi . Phi;
+T2=Subscript[\[Lambda], h](Phi . Phi)^2;
+T3=Subscript[\[Mu]2, s]*S^2;
+T4=Subscript[\[Lambda], s]S^4;
+T5=Subscript[\[Mu]2, x]*X^2;
+T6=Subscript[\[Lambda], x]*X^4;
+T7=Subscript[\[Lambda], hs]*Phi . Phi*S^2;
+T8=Subscript[\[Lambda], hx]Phi . Phi*X^2;
+T9=Subscript[\[Lambda], sx]S^2*X^2;
+T10=Subscript[\[Lambda], s]*S;
+T11=Subscript[\[Lambda], x]*X;
+T12=Subscript[\[Lambda], hhx]*Phi . Phi*X;
+T13=Subscript[\[Lambda], hhs]*Phi . Phi*S;
+T14=Subscript[\[Lambda], hhsx]*Phi . Phi*S*X;
+T15=Subscript[\[Lambda], ssx]*S^2*X;
+T16=Subscript[\[Lambda], sxx]*S*X^2;
+T17=Subscript[\[Lambda], sx]*S*X;
+T18=Subscript[\[Lambda], sssx]*S^3*X;
+T19=Subscript[\[Lambda], sxxx]*S*X^3;
+T20=Subscript[\[Lambda], sss]*S^3;
+T21=Subscript[\[Lambda], xxx]*X^3;
+
+V=T1+T2+T3+T4+T5+T6+T7+T8+T9+T10+T11+T12+T13+T14+T15+T16+T17+T18+T19+T20+T21;
+
+r[1]=Flatten[Expand[Solve[(Coefficient[Expand[V/.Rules],Subscript[\[CapitalTheta], h]]/.{a^2->0,a^3->0}/.{a->1})==0,Subscript[\[Mu]2, h]]]];
+
+r[2]=Flatten[Expand[Solve[(Coefficient[Expand[V/.Rules],Subscript[\[CapitalTheta], s]]/.{a^2->0,a^3->0}/.{a->1})==0,Subscript[\[Mu]2, s]]]];
+
+r[3]=Flatten[Expand[Solve[(Coefficient[Expand[V/.Rules],Subscript[\[CapitalTheta], x]]/.{a^2->0,a^3->0}/.{a->1})==0,Subscript[\[Mu]2, x]]]];
+
+PotSimpl={r[1][[1]],r[2][[1]],r[3][[1]]};
+
+VSimpl=Simplify[Expand[V/.PotSimpl]/.Rules];
+
+NoFields=Expand[VSimpl]/.{a^4->0,a^3->0,a^2->0};
+
+Cuadratic=((Expand[VSimpl]/.{a^4->0,a^3->0})-NoFields)/.{a^2->1};
+
+MixingMatrix={{M11,M12,M13},{M21,M22,M23},{M31,M32,M33}};
+
+fields={Subscript[\[CapitalTheta], h],Subscript[\[CapitalTheta], s],Subscript[\[CapitalTheta], x]};
+
+MatrixProduct=Expand[fields . MixingMatrix . fields];
+
+Thetah2p=Coefficient[MatrixProduct,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(h\), \(2\)]\)];
+Thetas2p=Coefficient[MatrixProduct,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(s\), \(2\)]\)];
+Thetax2p=Coefficient[MatrixProduct,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(x\), \(2\)]\)];
+Thetahsp=Coefficient[MatrixProduct,Subscript[\[CapitalTheta], h]*Subscript[\[CapitalTheta], s]]/.{M21->M12};
+Thetahxp=Coefficient[MatrixProduct,Subscript[\[CapitalTheta], h]*Subscript[\[CapitalTheta], x]]/.{M31->M13};
+Thetaxsp=Coefficient[MatrixProduct,Subscript[\[CapitalTheta], x]*Subscript[\[CapitalTheta], s]]/.{M32->M23};
+
+Thetah2=Coefficient[Cuadratic,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(h\), \(2\)]\)];
+Thetas2=Coefficient[Cuadratic,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(s\), \(2\)]\)];
+Thetax2=Coefficient[Cuadratic,\!\(\*SubsuperscriptBox[\(\[CapitalTheta]\), \(x\), \(2\)]\)];
+Thetahs=Coefficient[Cuadratic,Subscript[\[CapitalTheta], h]*Subscript[\[CapitalTheta], s]];
+Thetahx=Coefficient[Cuadratic,Subscript[\[CapitalTheta], h]*Subscript[\[CapitalTheta], x]];
+Thetaxs=Coefficient[Cuadratic,Subscript[\[CapitalTheta], x]*Subscript[\[CapitalTheta], s]];
+
+RulesMassMatrix={Thetah2p->Thetah2,Thetas2p->Thetas2,Thetax2p->Thetax2,Thetahsp/2->Thetahs/2,Thetahxp/2->Thetahx/2,Thetaxsp/2->Thetaxs/2};
+(MatrixProduct/.{M21->M12,M31->M13,M32->M23}/.RulesMassMatrix)-Cuadratic
+GaugeMassmatrix=((MixingMatrix/.{M21->M12,M31->M13,M32->M23}/.RulesMassMatrix));
+MassMatrix={{0.5*M1^2,0,0},{0,0.5*M2^2,0},{0,0,0.5*M3^2}};
+Rmat2={{R11,R12,R13},{R21,R22,R23},{R31,R32,R33}};
+Print[Thetah2];
+Print[Thetas2];
+Print[Thetax2];
+
+rule11=Flatten[Solve[GaugeMassmatrix[[1,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,1]],Subscript[\[Lambda], h]]];
+rule22=Flatten[Solve[GaugeMassmatrix[[2,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,2]], Subscript[\[Lambda], s]]];
+rule33=Flatten[Solve[GaugeMassmatrix[[3,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,3]],Subscript[\[Lambda], x]]];
+rule12=Flatten[Solve[GaugeMassmatrix[[1,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,2]],Subscript[\[Lambda], hs]]];
+rule13=Flatten[Solve[GaugeMassmatrix[[1,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,3]],Subscript[\[Lambda], hx]]];
+rule21=Flatten[Solve[GaugeMassmatrix[[2,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,1]],Subscript[\[Lambda], hs]]];
+rule23=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], sx]]];
+rule31=Flatten[Solve[GaugeMassmatrix[[3,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,1]],Subscript[\[Lambda], hx]]];
+rule32=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,2]], Subscript[\[Lambda], sx]]];
+
+rule111=Flatten[Solve[GaugeMassmatrix[[2,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,2]], Subscript[\[Lambda], s]]];
+rule112=Flatten[Solve[GaugeMassmatrix[[3,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,3]], Subscript[\[Lambda], x]]];
+rule113=Flatten[Solve[GaugeMassmatrix[[1,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,2]], Subscript[\[Lambda], hhs]]];
+rule114=Flatten[Solve[GaugeMassmatrix[[2,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,1]], Subscript[\[Lambda], hhs]]];
+rule115=Flatten[Solve[GaugeMassmatrix[[1,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,1]], Subscript[\[Lambda], hhsx]]];
+rule116=Flatten[Solve[GaugeMassmatrix[[2,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,1]], Subscript[\[Lambda], hhsx]]];
+rule117=Flatten[Solve[GaugeMassmatrix[[3,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,1]], Subscript[\[Lambda], hhsx]]];
+rule118=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], ssx]]];
+rule119=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,2]], Subscript[\[Lambda], sxx]]];
+rule120=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], sx]]];
+rule121=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,2]], Subscript[\[Lambda], sx]]];
+rule122=Flatten[Solve[GaugeMassmatrix[[1,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,3]], Subscript[\[Lambda], hhx]]];
+rule123=Flatten[Solve[GaugeMassmatrix[[3,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,1]], Subscript[\[Lambda], hhx]]];
+rule124=Flatten[Solve[GaugeMassmatrix[[2,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,2]], Subscript[\[Lambda], sssx]]];
+rule125=Flatten[Solve[GaugeMassmatrix[[3,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,3]], Subscript[\[Lambda], sxxx]]];
+rule126=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], sssx]]];
+rule127=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,2]], Subscript[\[Lambda], sxxx]]];
+rule128=Flatten[Solve[GaugeMassmatrix[[2,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,2]], Subscript[\[Lambda], sss]]];
+rule129=Flatten[Solve[GaugeMassmatrix[[3,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,3]], Subscript[\[Lambda], xxx]]];
+
+RulesCuadratic={rule11[[1]],rule12[[1]],rule13[[1]],rule21[[1]],rule22[[1]],rule23[[1]],rule31[[1]],rule32[[1]],rule33[[1]]};
+(*                
+Print[rule114[[1]]];
+Print[rule123[[1]]];
+Print[rule116[[1]]];
+Print[rule120[[1]]];
+Print[rule124[[1]]];
+Print[rule125[[1]]];
+Print[rule128[[1]]];
+Print[rule129[[1]]];*)
+
+phys={h1,h2,h3};
+gaugen=Transpose[Rmat2] . phys;
+gaugeb={Subscript[\[CapitalTheta], h],Subscript[\[CapitalTheta], s],Subscript[\[CapitalTheta], x]};
+gaugetophysn={gaugeb[[1]]->gaugen[[1]],gaugeb[[2]]->gaugen[[2]],gaugeb[[3]]->gaugen[[3]]};
+
+Cubic=Expand[Expand[VSimpl]/.gaugetophysn]/.{a^4->0,a^2->0,a^3->1,a->0};
+quartic=Expand[Expand[VSimpl]/.gaugetophysn]/.{a^4->1}/.{a->0};
+
+CubicModule[Field_]:=Module[{internal, expansion},
+internal=Simplify[Field];
+expansion=Expand[Cubic/.RulesCuadratic/.{a->1}];
+Coefficient[expansion,Field]];
+
+QuarticModule[Field_]:=Module[{internal, expansion},
+internal=Simplify[Field];
+expansion=Expand[quartic/.RulesCuadratic];
+Coefficient[expansion,Field]];
+
+M[1]=M1;
+M[2]=M2;
+M[3]=M3;
+v[1]=v;
+v[2]= Subscript[v, s];
+v[3]= Subscript[v, x];
+
+Sabb[a_,b_]:=Module[{},1/2*Sum[Rmat2[[a,j]]*Rmat2[[b,j]]^2/v[j],{j,1,3}]*(M[a]^2+2*M[b]^2)];
+Sabc[a_,b_,c_]:=Module[{},Sum[Rmat2[[a,j]]*Rmat2[[b,j]]*Rmat2[[c,j]]/v[j],{j,1,3}]*Sum[M[j]^2,{j,1,3}]];
+Saaa[a_]:=Module[{},1/2*Sum[Rmat2[[a,j]]^3/v[j],{j,1,3}]*M[a]^2];
+
+Saaaa[a_]:=Module[{S2},S2=1/8*Sum[1/v[k]*Sum[1/v[j]*Sum[Rmat2[[a,j]]^2*Rmat2[[i,j]]*Rmat2[[a,k]]^2*Rmat2[[i,k]]*M[i]^2,{i,1,3}],{j,1,3}],{k,1,3}];S2]
+
+(*Corine quartic coupling generation code*)
+
+Saaab[a_,b_]:=Module[{S2},S2=1/2*Sum[1/v[k]*Sum[1/v[j]*Sum[Rmat2[[a,k]]^2*Rmat2[[k,j]]*Rmat2[[a,j]]*Rmat2[[b,j]]*Rmat2[[k,i]]*M[i]^2,{i,1,3}],{j,1,3}],{k,1,3}];S2];
+EvenSaabc[a_, b_,c_]:=Module[{S2},S2=1/2*Sum[1/v[k]*Sum[1/v[j]*Sum[Rmat2[[i,k]]*Rmat2[[i,j]]*Rmat2[[a,k]]*Rmat2[[c,j]]*(Rmat2[[a,k]]*Rmat2[[b,j]]+2*Rmat2[[b,k]]*Rmat2[[a,j]])*M[i]^2,{i,1,3}],{j,1,3}],{k,1,3}];S2];
+Saabb[a_, b_]:=Module[{S2},S2=1/4*Sum[1/v[k]*Sum[1/v[j]*Sum[Rmat2[[i,k]]*Rmat2[[i,j]]*Rmat2[[a,k]]*Rmat2[[b,j]]*(Rmat2[[a,k]]*Rmat2[[b,j]]+2Rmat2[[a,j]]*Rmat2[[b,k]])*M[i]^2,{i,1,3}],{j,1,3}],{k,1,3}];S2];
+
+OddSaabc[a_, b_, c_] := Module[{S2},S2 = Sum[1/v*Sum[1/v[j]*Sum[Rmat2[[i, 1]]*Rmat2[[i, k]]*M1*M[k],{i, 1, 3}],{k,Select[Range[3],#!=j&]}],{j, 1, 3}];S2];
+
+
+\[Theta]hs=-0.129;
+\[Theta]hx=0.226;
+\[Theta]sx=-0.899;
+s1=Sin[\[Theta]hs];
+c1=Cos[\[Theta]hs];
+s2=Sin[\[Theta]hx];
+c2=Cos[\[Theta]hx];
+s3=Sin[\[Theta]sx];
+c3=Cos[\[Theta]sx];
+
+Rnum={{c1*c2,-s1*c2,-s2},{s1*c3-c1*s2*s3,c1*c3+s1*s2*s3,-c2*s3},{c1*s2*c3+s1*s3,c1*s3-s1*s2*c3,c2*c3}};
+
+(*Symbols to represent couplings for .dat files*)
+K1 = Symbol["K1"]; (*\[Lambda]_x*)
+K2 = Symbol["K2"]; (*\[Lambda]_s*)
+K3 = Symbol["K3"]; (*\[Lambda]_sx*)
+K4 = Symbol["K4"]; (*\[Lambda]_ssx*)
+K5 = Symbol["K5"]; (*\[Lambda]_sxx*)
+K6 = Symbol["K6"]; (*\[Lambda]_hhx*)
+K7 = Symbol["K7"]; (*\[Lambda]_hhs*)
+K8 = Symbol["K8"]; (*\[Lambda]_sssx*)
+K9 = Symbol["K9"]; (*\[Lambda]_sxxx*)
+K10 = Symbol["K10"]; (*\[Lambda]_xxxx*)
+K11 = Symbol["K11"]; (*\[Lambda]_ssss*)
+K12 = Symbol["K12"]; (*\[Lambda]_hhsx*)
+K13 = Symbol["K13"]; (*\[Lambda]_sss*)
+K14 = Symbol["K14"]; (*\[Lambda]_xxx*)
+K15 = Symbol["K15"]; (*\[Lambda]_hh*)
+K16 = Symbol["K16"]; (*\[Lambda]_hhss*)
+K17 = Symbol["K17"]; (*\[Lambda]_hhxx*)
+K18 = Symbol["K18"]; (*\[Lambda]_ssxx*)
+
+ReplaceThetah = c1*c2;
+ReplaceThetaS = c1*c3+s1*s2*s3;
+ReplaceThetaX = c2*c3;
+ReplaceVx = vx;
+ReplaceVs = vs;
+
+RulesCouplings={Subscript[v, s]->ReplaceVs,
+Subscript[v, x]->ReplaceVx,
+Subscript[\[CapitalTheta], h] -> ReplaceThetah,
+Subscript[\[CapitalTheta], s] -> ReplaceThetaS,
+Subscript[\[CapitalTheta], x] -> ReplaceThetaX, 
+Subscript[\[Lambda], x]-> K1,
+Subscript[\[Lambda], s]-> K2,
+Subscript[\[Lambda], sx]-> K3,
+Subscript[\[Lambda], ssx]-> K4,
+Subscript[\[Lambda], sxx]-> K5,
+Subscript[\[Lambda], hhx]-> K6,
+Subscript[\[Lambda], hhs]-> K7,
+Subscript[\[Lambda], sssx]-> K8,
+Subscript[\[Lambda], sxxx]-> K9,
+Subscript[\[Lambda], xxxx]-> K10,
+Subscript[\[Lambda], ssss]-> K11,
+Subscript[\[Lambda], hhsx]-> K12,
+Subscript[\[Lambda], sss]-> K13,
+Subscript[\[Lambda], xxx]-> K14,
+Subscript[\[Lambda], hh]-> K15,
+Subscript[\[Lambda], hhss]-> K16,
+Subscript[\[Lambda], hhxx]-> K17,
+Subscript[\[Lambda], ssxx]-> K18};
+
+RulesNumeric={R11->Rnum[[1,1]],R12->Rnum[[1,2]],R13->Rnum[[1,3]],R21->Rnum[[2,1]],R22->Rnum[[2,2]],R23->Rnum[[2,3]],R31->Rnum[[3,1]],R32->Rnum[[3,2]],R33->Rnum[[3,3]],
+              v->246,
+Subscript[v, s]->990,
+Subscript[v, x]->310,
+M1->125,
+M2->126,
+M3->255,
+Subscript[\[CapitalTheta], h] -> ReplaceThetah,
+Subscript[\[CapitalTheta], s] -> ReplaceThetaS,
+Subscript[\[CapitalTheta], x] -> ReplaceThetaX, 
+Subscript[\[Lambda], x]-> 0.,
+Subscript[\[Lambda], s]-> 0.,
+Subscript[\[Lambda], sx]-> 0.,
+Subscript[\[Lambda], ssx]-> 0.,
+Subscript[\[Lambda], sxx]-> 0.,
+Subscript[\[Lambda], hhx]-> 0.,
+Subscript[\[Lambda], hhs]-> 0.,
+Subscript[\[Lambda], sssx]-> 0.,
+Subscript[\[Lambda], sxxx]-> 0.,
+Subscript[\[Lambda], xxxx]-> K10,
+Subscript[\[Lambda], ssss]-> K11,
+Subscript[\[Lambda], hhsx]-> 0.,
+Subscript[\[Lambda], xxx]-> 0.,
+Subscript[\[Lambda], sss]-> 0.,
+Subscript[\[Lambda], hh]-> K15,
+Subscript[\[Lambda], hhss]-> K16,
+Subscript[\[Lambda], hhxx]-> K17,
+Subscript[\[Lambda], ssxx]-> K18
+};
+
+CubicCouplings = {
+   CubicModule[h1^3], 
+   CubicModule[h2^3], 
+   CubicModule[h3^3], 
+   CubicModule[h1^2 * h2], 
+   CubicModule[h1^2 * h3], 
+   CubicModule[h2^2 * h3], 
+   CubicModule[h1 * h2 * h3]
+};
+
+QuarticCouplings = {
+   QuarticModule[h1^4],
+   QuarticModule[h2^4],
+   QuarticModule[h3^4],
+   QuarticModule[h1^2 * h2^2],
+   QuarticModule[h1^2 * h3^2],
+   QuarticModule[h2^2 * h3^2],
+   QuarticModule[h1^2 * h2 * h3],
+   QuarticModule[h2^2 * h1 * h3],
+   QuarticModule[h3^2 * h1 * h2]
+};
+
+(************CORINE COUPLINGS TRSM W/OUT SYMMETRIES*************)
+(*
+Print["**************************************************************************************************************"]
+Print["********************************************CUBIC COUPLINGS****************************************************"]
+Print["**************************************************************************************************************"]
+Print[""];
+Print["CUBIC COUPLINGS GENERATED USING CubicModel: "];
+Print[""];
+Print["111.dat: ", CubicModule[h1^3]]; 
+Print["112.dat: ", CubicModule[h1^2 * h2]]; 
+Print["113.dat: ", CubicModule[h1^2 * h3]]; 
+Print["122.dat: ", CubicModule[h1*h2^2]];
+Print["123.dat: ", CubicModule[h1 * h2 * h3]];
+Print["133.dat: ", CubicModule[h1*h3^2]];
+Print["222.dat: ", CubicModule[h2^3]]; 
+Print["223.dat: ", CubicModule[h2^2 * h3]];
+Print["233.dat: ", CubicModule[h2*h3^2]]; 
+Print["333.dat: ", CubicModule[h3^3]]; 
+Print[""]; *) (*
+Print["**************************************************************************************************************"]
+Print[""];
+Print["CUBIC COUPLINGS GENERATED USING CubicModel WITH PARAMETER REPLACEMENTS: "];
+Print[""];
+Print["111.dat: ", CubicModule[h1^3]/.RulesCouplings]; 
+Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesCouplings]; 
+Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesCouplings]; 
+Print["122.dat: ", CubicModule[h1*h2^2]/.RulesCouplings];
+Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesCouplings];
+Print["133.dat: ", CubicModule[h1*h3^2]/.RulesCouplings];
+Print["222.dat: ", CubicModule[h2^3]/.RulesCouplings]; 
+Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesCouplings];
+Print["233.dat: ", CubicModule[h2*h3^2]/.RulesCouplings]; 
+Print["333.dat: ", CubicModule[h3^3]/.RulesCouplings]; 
+
+Print["**************************************************************************************************************"]
+
+Print["CUBIC COUPLINGS USING CubicModel MODEL EVALUATED AT BENCHMARK SCENARIOS: "]
+
+Print["111.dat: ", CubicModule[h1^3]/.RulesNumeric]; 
+Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesNumeric]; 
+Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesNumeric]; 
+Print["122.dat: ", CubicModule[h1*h2^2]/.RulesNumeric];
+Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesNumeric];
+Print["133.dat: ", CubicModule[h1*h3^2]/.RulesNumeric];
+Print["222.dat: ", CubicModule[h2^3]/.RulesNumeric]; 
+Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesNumeric];
+Print["233.dat: ", CubicModule[h2*h3^2]/.RulesNumeric]; 
+Print["333.dat: ", CubicModule[h3^3]/.RulesNumeric]; 
+Print[""]; *)(*
+Print["**************************************************************************************************************"]
+Print[""]; 
+Print["CUBIC COUPLINGS GENERATED USING S_ijk EVALUATED AT BENCHMARK SCENARIOS: "]
+Print[""];
+Print["111.dat ", Saaa[1]];
+Print["112.dat ", Sabb[2,1]];
+Print["113.dat ", Sabb[3,1]];
+Print["122.dat ", Sabb[1,2]];
+Print["123.dat ", Sabc[1,2,3]];
+Print["133.dat ", Sabb[1,3]];
+Print["222.dat ", Saaa[2]];
+Print["223.dat ", Sabb[3,2]];
+Print["233.dat ", Sabb[2,3]];
+Print["333.dat ", Saaa[3]];
+Print["111.dat ", Saaa[1]/.RulesCouplings];
+Print["112.dat ", Sabb[2,1]/.RulesCouplings];
+Print["113.dat ", Sabb[3,1]/.RulesCouplings];
+Print["122.dat ", Sabb[1,2]/.RulesCouplings];
+Print["123.dat ", Sabc[1,2,3]/.RulesCouplings];
+Print["133.dat ", Sabb[1,3]/.RulesCouplings];
+Print["222.dat ", Saaa[2]/.RulesCouplings];
+Print["223.dat ", Sabb[3,2]/.RulesCouplings];
+Print["233.dat ", Sabb[2,3]/.RulesCouplings];
+Print["333.dat ", Saaa[3]/.RulesCouplings];
+Print[""]; *)(*
+Print["**************************************************************************************************************"]
+Print["******************************************QUARTIC COUPLINGS****************************************************"]
+Print["**************************************************************************************************************"]
+Print[""]; 
+Print["QUARTIC COUPLINGS GENERATED USING QuarticModule: "]
+Print[""];
+Print["1111.dat ", QuarticModule[h1^4]];
+Print["1112.dat ", QuarticModule[h1^3*h2]];
+Print["1113.dat ", QuarticModule[h1^3*h3]];
+Print["1122.dat ", QuarticModule[h1^2*h2^2]];
+Print["1123.dat ", QuarticModule[h1^2*h2*h3]];
+Print["1133.dat ", QuarticModule[h1^2*h3^2]];
+Print["1222.dat ", QuarticModule[h1*h3^3]];
+Print["1223.dat ", QuarticModule[h1*h2^2*h3]];
+Print["1233.dat ", QuarticModule[h1*h2*h3^2]];
+Print["1333.dat ", QuarticModule[h1*h3^3]];
+Print["2222.dat ", QuarticModule[h2^4]];
+Print["2223.dat ", QuarticModule[h2^3*h3]];
+Print["2233.dat ", QuarticModule[h2^2*h3^2]];
+Print["2333.dat ", QuarticModule[h2*h3^3]];
+Print["3333.dat ", QuarticModule[h3^4]]; 
+Print[""]; *)(*
+Print["**************************************************************************************************************"]
+Print[""];
+Print["QUARTIC COUPLINGS GENERATED USING QuarticModule WITH PARAMETER REPLACEMENTS: "]
+Print[""];
+Print["1111.dat ", QuarticModule[h1^4]/.RulesCouplings];
+Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesCouplings];
+Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesCouplings];
+Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesCouplings];
+Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesCouplings];
+Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesCouplings];
+Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesCouplings];
+Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesCouplings];
+Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesCouplings];
+Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesCouplings];
+Print["2222.dat ", QuarticModule[h2^4]/.RulesCouplings];
+Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesCouplings];
+Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesCouplings];
+Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesCouplings];
+Print["3333.dat ", QuarticModule[h3^4]/.RulesCouplings]; 
+Print[""];
+Print["**************************************************************************************************************"]
+Print[""];
+Print["QUARTIC COUPLINGS USING QuarticModule EVALUATED AT BENCHMARK SCENARIOS"];
+Print[""];
+Print["1111.dat ", QuarticModule[h1^4]/.RulesNumeric];
+Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesNumeric];
+Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesNumeric];
+Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesNumeric];
+Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesNumeric];
+Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesNumeric];
+Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
+Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesNumeric];
+Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesNumeric];
+Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
+Print["2222.dat ", QuarticModule[h2^4]/.RulesNumeric];
+Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesNumeric];
+Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesNumeric];
+Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesNumeric];
+Print["3333.dat ", QuarticModule[h3^4]/.RulesNumeric]; 
+Print[""];
+Print["**************************************************************************************************************"]
+Print[""]; *) (*
+Print["QUARTIC COUPLINGS GENERATED USING S_ijkl EVALUATED AT BENCHMARK SCENARIOS: "]
+Print[""];
+Print["1123.dat ", EvenSaabc[1,2,3]];
+Print["1123.dat ", EvenSaabc[1,2,3]/.RulesCouplings];
+Print["1123.dat ", OddSaabc[1,2,3]];
+Print["1123.dat ", OddSaabc[1,2,3]/.RulesCouplings];
+Print["1111.dat ", Saaaa[1]/.RulesCouplings];
+Print["1112.dat ", Saaab[1,2]/.RulesCouplings];
+Print["1113.dat ", Saaab[1,3]/.RulesCouplings];
+Print["1122.dat ", Saabb[1,2]/.RulesCouplings];
+
+Print["1133.dat ", Saabb[1,3]/.RulesCouplings];
+Print["1222.dat ", Saaab[2,1]/.RulesCouplings];
+Print["1223.dat ", Saabc[2,1,3]/.RulesCouplings];
+Print["1233.dat ", Saabc[3,1,2]/.RulesCouplings];
+Print["1333.dat ", Saaab[3,1]/.RulesCouplings];
+Print["2222.dat ", Saaaa[2]/.RulesCouplings];
+Print["2223.dat ", Saaab[2,3]/.RulesCouplings];
+Print["2233.dat ", Saabb[2,3]/.RulesCouplings];
+Print["2333.dat ", Saaab[3,2]/.RulesCouplings];
+Print["3333.dat ", Saaaa[3]/.RulesCouplings]; 
+Print[""];  *)(*
+Print["**************************************************************************************************************"]
+Print["**************************************************************************************************************"];
+Print["************************************************CHOP CHECK*****************************************************"];
+Print["**************************************************************************************************************"];
+Print[""]; 
+(*"Chop check", i.e Does the subtraction of the two methods of generation when evaluated at the numerical benchmark scenarios
+equal zero*)
+Print["---------> CHOP CHECK 111.dat: "]
+Print[""]; 
+Print["111.dat from cubicmodule numeric evaluation: ", CubicModule[h1^3]/.RulesNumeric];
+Print["111.dat from Saaa numeric evaluation: ", Saaa[1]/.RulesNumeric];
+Print["Chop check: ", (CubicModule[h1^3]-Saaa[1])/.RulesNumeric];
+Print[""]; 
+Print["---------> CHOP CHECK 112.dat: "]
+Print[""]; 
+Print["112.dat from cubicmodule numeric evaluation: ", CubicModule[h1^2 * h2]/.RulesNumeric];
+Print["112.dat from Sabb numeric evaluation: ", Sabb[2,1]/.RulesNumeric];
+Print["Chop check: ", (CubicModule[h1^2*h2]-Sabb[2,1])/.RulesNumeric];
+Print[""]; 
+Print["---------> CHOP CHECK 1111.dat: "]
+Print[""]; 
+Print["1111.dat from quarticmodule numeric evaluation: ", QuarticModule[h1^4]/.RulesNumeric];
+Print["1111.dat from Saaaa numeric evaluation: ", Saaaa[1]/.RulesNumeric];
+Print["Chop check: ", (QuarticModule[h1^4]-Saaaa[1])/.RulesNumeric];
+Print[""]; 
+Print["---------> CHOP CHECK 1112.dat: "]
+Print[""]; 
+Print["1112.dat from quarticmodule numeric evaluation: ", QuarticModule[h1^3*h2]/.RulesNumeric];
+Print["1112.dat from Saaab numeric evaluation: ", Saaab[1,2]/.RulesNumeric];
+Print["Chop check: ", (QuarticModule[h1^3*h2]-Saaab[1,2])/.RulesNumeric];
+Print[""]; *)
