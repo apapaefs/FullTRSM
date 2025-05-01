@@ -1,0 +1,1013 @@
+ClearAll["Global`*"]
+
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+lambdaS = Symbol["lambdaS"];
+K1 = Symbol["K1"]; (* Lambda_hhs *)
+K2 = Symbol["K2"];  (* Lambda_hht *)
+K3 = Symbol["K3"];  (* Lambda_hhss *)
+K4 = Symbol["K4"];  (* Lambda_hhtt *)
+K5 = Symbol["K5"];  (* Lambda_sss *)
+K6 = Symbol["K6"];  (* Lambda_ttt *)
+K7 = Symbol["K7"];  (* Lambda_s *)
+K8 = Symbol["K8"];  (* Lambda_t *)
+K9 = Symbol["K9"];   (* Lambda_ssss *)
+K10 = Symbol["K10"];  (* Lambda_tttt *)
+K11 = Symbol["K11"];  (* Lambda_st *)
+K12 = Symbol["K12"];  (* Lambda_sstt *)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+
+
+V[h_, s_, t_] := 
+  Module[{H = (h + v0)/Sqrt[2], S = (s + x0), T = (t + z0)},
+    ExpandAll[(muH^2)*H*H] + 
+    ExpandAll[(lambdaH/2)*(H*H)^2] +
+    ExpandAll[K1*H*H*S] + 
+    ExpandAll[K2*H*H*T] +
+    ExpandAll[((muT^2)/2)*(T^2)]  + 
+    ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] +
+    ExpandAll[((K4/2)*H*H)*(T^2)] +
+    ExpandAll[(K5/3)*(S^3)] + 
+    ExpandAll[(K6/3)*(T^3)] +
+    ExpandAll[K7*S] +
+    ExpandAll[K8*T] +
+    ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + 
+    ExpandAll[K11*S*T] +
+    ExpandAll[(K12/2)*(S^2)*(T^2)]
+  ];
+
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) evaluated at s=0, h=0, t=0: ", matrixVST];
+
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+rotationmatrix3D = {
+   {(c1*c2), (-s1*c2), (-s2)},
+   {(s1*c3)-(c1*s2*s3), (c1*c3)+(s1*s2*s3), -c2*s3},
+   {(c1*s2*c3)+(s1*s3), (c1*s3)-(s1*s2*c3), (c2*c3)}
+};
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+Finalmatrix = rotationmatrix3Dtranspose*massMatrixFull*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[Finalmatrix]];
+Dimensions[massMatrixFull];
+vhs = Finalmatrix[[1, 2]];
+vht = Finalmatrix[[1, 3]];
+vst = Finalmatrix[[2, 3]];
+Print[vhs];
+Print[vht];
+Print[vst];
+
+massbaseMatrix = {
+    {mH, mHS, mHT},
+    {0,mS, mST},
+    {0,0,mT}
+};
+mmatrix = rotationmatrix3Dtranspose*massbaseMatrix*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[mmatrix]];
+Dimensions[mmatrix];
+Print[mmatrix];
+mhs = massbaseMatrix[[1, 2]];
+mht = massbaseMatrix[[1, 3]];
+mst = massbaseMatrix[[2, 3]];
+
+Print[Solve[vhs == 0, K3]];
+Print[Solve[vht == 0, K4]];
+Print[Solve[vst == 0, K12]];
+
+k3solutions = Solve[vhs == 0, K3];
+k4solutions = Solve[vht == 0, K4];
+k12solutions = Solve[vst == 0, K12];
+
+DiagonalizedFinalMatrix = Finalmatrix /. {K3 -> k3solutions[[1, 1, 2]], 
+                                             K4 -> k4solutions[[1, 1, 2]], 
+                                             K12 -> k12solutions[[1, 1, 2]]};
+Print["Final matrix with solutions: ", DiagonalizedFinalMatrix];
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", massH];
+Print["Mass Eigenstate h2: ", massS];
+Print["Mass Eigenstate h3: ", massT];
+
+
+19/12/2024 
+
+ClearAll["Global`*"]
+
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K1 = Symbol["K1"]; (* Lambda_hhs *)
+K2 = Symbol["K2"];  (* Lambda_hht *)
+K3 = Symbol["K3"];  (* Lambda_hhss *)
+K4 = Symbol["K4"];  (* Lambda_hhtt *)
+K5 = Symbol["K5"];  (* Lambda_sss *)
+K6 = Symbol["K6"];  (* Lambda_ttt *)
+K7 = Symbol["K7"];  (* Lambda_s *)
+K8 = Symbol["K8"];  (* Lambda_t *)
+K9 = Symbol["K9"];   (* Lambda_ssss *)
+K10 = Symbol["K10"];  (* Lambda_tttt *)
+K11 = Symbol["K11"];  (* Lambda_st *)
+K12 = Symbol["K12"];  (* Lambda_sstt *)
+k13 = Symbol["K13"];  (* Lambda_sst *)
+k14 = Symbol["K14"];  (* Lambda_stt *)
+k15 = Symbol["K15"];  (* Lambda_ssst *)
+k16 = Symbol["K16"];  (* Lambda_sttt *)
+k17 = Symbol["K17"];  (* Lambda_hhst *)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+thetaST = Symbol["thetaST"];
+
+
+V[h_, s_, t_] := 
+  Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)), T = ((t + z0)/)},
+    ExpandAll[(muH^2)*H*H] + 
+    ExpandAll[(lambdaH/2)*(H*H)^2] +
+    ExpandAll[K1*H*H*S] + 
+    ExpandAll[K2*H*H*T] +
+    ExpandAll[((muT^2)/2)*(T^2)]  + 
+    ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] +
+    ExpandAll[((K4/2)*H*H)*(T^2)] +
+    ExpandAll[(K5/3)*(S^3)] + 
+    ExpandAll[(K6/3)*(T^3)] +
+    ExpandAll[K7*S] +
+    ExpandAll[K8*T] +
+    ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + 
+    ExpandAll[K11*S*T] +
+    ExpandAll[(K12/2)*(S^2)*(T^2)] +
+    ExpandAll[(K13)*(S^2)*(T)] +
+    ExpandAll[(K14)*(S)*(T^2)] +
+    ExpandAll[(K15)*(S^3)*(T)] + 
+    ExpandAll[(K16)*(S)*(T^3)] + 
+    ExpandAll[(K17)H*H*S*T]     
+  ];
+
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) evaluated at s=0, h=0, t=0: ", matrixVST];
+
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+rotationmatrix3D = {
+   {(c1*c2), (-s1*c2), (-s2)},
+   {(s1*c3)-(c1*s2*s3), (c1*c3)+(s1*s2*s3), -c2*s3},
+   {(c1*s2*c3)+(s1*s3), (c1*s3)-(s1*s2*c3), (c2*c3)}
+};
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+Finalmatrix = rotationmatrix3Dtranspose*massMatrixFull*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[Finalmatrix]];
+Dimensions[massMatrixFull];
+vhs = Finalmatrix[[1, 2]];
+vht = Finalmatrix[[1, 3]];
+vst = Finalmatrix[[2, 3]];
+Print[vhs];
+Print[vht];
+Print[vst];
+
+massbaseMatrix = {
+    {mH, mHS, mHT},
+    {0,mS, mST},
+    {0,0,mT}
+};
+mmatrix = rotationmatrix3Dtranspose*massbaseMatrix*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[mmatrix]];
+Dimensions[mmatrix];
+Print[mmatrix];
+mhs = massbaseMatrix[[1, 2]];
+mht = massbaseMatrix[[1, 3]];
+mst = massbaseMatrix[[2, 3]];
+
+Print[Solve[vhs == 0, K3]];
+Print[Solve[vht == 0, K4]];
+Print[Solve[vst == 0, K12]];
+
+k3solutions = Solve[vhs == 0, K3];
+k4solutions = Solve[vht == 0, K4];
+k12solutions = Solve[vst == 0, K12];
+
+DiagonalizedFinalMatrix = Finalmatrix /. {K3 -> k3solutions[[1, 1, 2]], 
+                                             K4 -> k4solutions[[1, 1, 2]], 
+                                             K12 -> k12solutions[[1, 1, 2]]};
+Print["Final matrix with solutions: ", DiagonalizedFinalMatrix];
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", massH];
+Print["Mass Eigenstate h2: ", massS];
+Print["Mass Eigenstate h3: ", massT];
+
+27/12/2024 
+
+In the limit of Z2 symmetry: 
+
+
+ClearAll["Global`*"]
+
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K3 = Symbol["K3"];  (* Lambda_hhss *)
+K4 = Symbol["K4"];  (* Lambda_hhtt *)
+K9 = Symbol["K9"];   (* Lambda_ssss *)
+K10 = Symbol["K10"];  (* Lambda_tttt *)
+K12 = Symbol["K12"];  (* Lambda_sstt *)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+thetaST = Symbol["thetaST"];
+
+
+V[h_, s_, t_] := 
+  Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)/Sqrt[2]), T = ((t + z0)/Sqrt[2])},
+    ExpandAll[(muH^2)*H*H] + 
+    ExpandAll[(lambdaH/2)*(H*H)^2] +
+    ExpandAll[((muT^2)/2)*(T^2)]  + 
+    ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] +
+    ExpandAll[((K4/2)*H*H)*(T^2)] +
+    ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + 
+    ExpandAll[(K12/2)*(S^2)*(T^2)]    
+  ];
+
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+
+tadpoleVH = VH /. {s -> 0, t -> 0, h -> 0};
+tadpoleVS = VS /. {s -> 0, t -> 0, h -> 0};
+tadpoleVT = VT /. {s -> 0, t -> 0, h -> 0};
+
+Print["Tadpole minimization condition for S field:", tadpoleVS];
+Print["Tadpole minimization condition for T field:", tadpoleVT];
+Print["Tadpole minimization condition for H field:", tadpoleVH];
+
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) evaluated at s=0, h=0, t=0: ", matrixVST];
+
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+rotationmatrix3D = {
+   {(c1*c2), (-s1*c2), (-s2)},
+   {(s1*c3)-(c1*s2*s3), (c1*c3)+(s1*s2*s3), -c2*s3},
+   {(c1*s2*c3)+(s1*s3), (c1*s3)-(s1*s2*c3), (c2*c3)}
+};
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+Finalmatrix = rotationmatrix3Dtranspose*massMatrixFull*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[Finalmatrix]];
+Dimensions[massMatrixFull];
+vhs = Finalmatrix[[1, 2]];
+vht = Finalmatrix[[1, 3]];
+vst = Finalmatrix[[2, 3]];
+Print[vhs];
+Print[vht];
+Print[vst];
+
+massbaseMatrix = {
+    {mH, mHS, mHT},
+    {0,mS, mST},
+    {0,0,mT}
+};
+mmatrix = rotationmatrix3Dtranspose*massbaseMatrix*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[mmatrix]];
+Dimensions[mmatrix];
+Print[mmatrix];
+mhs = massbaseMatrix[[1, 2]];
+mht = massbaseMatrix[[1, 3]];
+mst = massbaseMatrix[[2, 3]];
+
+Print[Solve[vhs == 0, K3]];
+Print[Solve[vht == 0, K4]];
+Print[Solve[vst == 0, K12]];
+
+k3solutions = Solve[vhs == 0, K3];
+k4solutions = Solve[vht == 0, K4];
+k12solutions = Solve[vst == 0, K12];
+
+DiagonalizedFinalMatrix = Finalmatrix /. {K3 -> k3solutions[[1, 1, 2]], 
+                                             K4 -> k4solutions[[1, 1, 2]], 
+                                             K12 -> k12solutions[[1, 1, 2]]};
+Print["Final matrix with solutions: ", DiagonalizedFinalMatrix];
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", massH];
+Print["Mass Eigenstate h2: ", massS];
+Print["Mass Eigenstate h3: ", massT];
+
+
+10/01/2025 
+ClearAll["Global`*"]
+
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K1 = Symbol["K1"]; (* Lambda_hhs *)
+K2 = Symbol["K2"];  (* Lambda_hht *)
+K3 = Symbol["K3"];  (* Lambda_hhss *)
+K4 = Symbol["K4"];  (* Lambda_hhtt *)
+K5 = Symbol["K5"];  (* Lambda_sss *)
+K6 = Symbol["K6"];  (* Lambda_ttt *)
+K7 = Symbol["K7"];  (* Lambda_s *)
+K8 = Symbol["K8"];  (* Lambda_t *)
+K9 = Symbol["K9"];   (* Lambda_ssss *)
+K10 = Symbol["K10"];  (* Lambda_tttt *)
+K11 = Symbol["K11"];  (* Lambda_st *)
+K12 = Symbol["K12"];  (* Lambda_sstt *)
+k13 = Symbol["K13"];  (* Lambda_sst *)
+k14 = Symbol["K14"];  (* Lambda_stt *)
+k15 = Symbol["K15"];  (* Lambda_ssst *)
+k16 = Symbol["K16"];  (* Lambda_sttt *)
+k17 = Symbol["K17"];  (* Lambda_hhst *)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+thetaST = Symbol["thetaST"];
+
+
+V[h_, s_, t_] := 
+  Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)/Sqrt[2]), T = ((t + z0)/Sqrt[2])},
+    ExpandAll[(muH^2)*H*H] + 
+    ExpandAll[(lambdaH/2)*(H*H)^2] +
+    ExpandAll[K1*H*H*S] + 
+    ExpandAll[K2*H*H*T] +
+    ExpandAll[((muT^2)/2)*(T^2)]  + 
+    ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] +
+    ExpandAll[((K4/2)*H*H)*(T^2)] +
+    ExpandAll[(K5/3)*(S^3)] + 
+    ExpandAll[(K6/3)*(T^3)] +
+    ExpandAll[K7*S] +
+    ExpandAll[K8*T] +
+    ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + 
+    ExpandAll[K11*S*T] +
+    ExpandAll[(K12/2)*(S^2)*(T^2)] +
+    ExpandAll[(K13)*(S^2)*(T)] +
+    ExpandAll[(K14)*(S)*(T^2)] +
+    ExpandAll[(K15)*(S^3)*(T)] + 
+    ExpandAll[(K16)*(S)*(T^3)] + 
+    ExpandAll[(K17)H*H*S*T]     
+  ];
+
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+tadpoleVH = VH /. {s -> 0, t -> 0, h -> 0};
+tadpoleVS = VS /. {s -> 0, t -> 0, h -> 0};
+tadpoleVT = VT /. {s -> 0, t -> 0, h -> 0};
+
+Print["Tadpole minimization condition for S field:", tadpoleVS];
+Print["Tadpole minimization condition for T field:", tadpoleVT];
+Print["Tadpole minimization condition for H field:", tadpoleVH];
+
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) evaluated at s=0, h=0, t=0: ", matrixVST];
+
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+rotationmatrix3D = {
+   {(c1*c2), (-s1*c2), (-s2)},
+   {(s1*c3)-(c1*s2*s3), (c1*c3)+(s1*s2*s3), -c2*s3},
+   {(c1*s2*c3)+(s1*s3), (c1*s3)-(s1*s2*c3), (c2*c3)}
+};
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+Finalmatrix = rotationmatrix3Dtranspose*massMatrixFull*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[Finalmatrix]];
+Dimensions[massMatrixFull];
+vhs = Finalmatrix[[1, 2]];
+vht = Finalmatrix[[1, 3]];
+vst = Finalmatrix[[2, 3]];
+Print[vhs];
+Print[vht];
+Print[vst];
+
+massbaseMatrix = {
+    {mH, mHS, mHT},
+    {0,mS, mST},
+    {0,0,mT}
+};
+mmatrix = rotationmatrix3Dtranspose*massbaseMatrix*rotationmatrix3D
+Print["Is it diagonal? ", DiagonalMatrixQ[mmatrix]];
+Dimensions[mmatrix];
+Print[mmatrix];
+mhs = massbaseMatrix[[1, 2]];
+mht = massbaseMatrix[[1, 3]];
+mst = massbaseMatrix[[2, 3]];
+
+Print[Solve[vhs == 0, K3]];
+Print[Solve[vht == 0, K4]];
+Print[Solve[vst == 0, K12]];
+
+k3solutions = Solve[vhs == 0, K3];
+k4solutions = Solve[vht == 0, K4];
+k12solutions = Solve[vst == 0, K12];
+
+DiagonalizedFinalMatrix = Finalmatrix /. {K3 -> k3solutions[[1, 1, 2]], 
+                                             K4 -> k4solutions[[1, 1, 2]], 
+                                             K12 -> k12solutions[[1, 1, 2]]};
+Print["Final matrix with solutions: ", DiagonalizedFinalMatrix];
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", massH];
+Print["Mass Eigenstate h2: ", massS];
+Print["Mass Eigenstate h3: ", massT];
+
+15/01/2025 
+
+***Possible code modification to diagonalized mass matrix -------DONT USE 
+ClearAll["Global`*"]
+
+(* Define parameters and symbols as before *)
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K1 = Symbol["K1"]; (* Lambda_hhs *)
+K2 = Symbol["K2"]; (* Lambda_hht *)
+K3 = Symbol["K3"]; (* Lambda_hhss *)
+K4 = Symbol["K4"]; (* Lambda_hhtt *)
+K5 = Symbol["K5"]; (* Lambda_sss *)
+K6 = Symbol["K6"]; (* Lambda_ttt *)
+K7 = Symbol["K7"]; (* Lambda_s *)
+K8 = Symbol["K8"]; (* Lambda_t *)
+K9 = Symbol["K9"]; (* Lambda_ssss *)
+K10 = Symbol["K10"]; (* Lambda_tttt *)
+K11 = Symbol["K11"]; (* Lambda_st *)
+K12 = Symbol["K12"]; (* Lambda_sstt *)
+K13 = Symbol["K13"]; (* Lambda_sst *)
+K14 = Symbol["K14"]; (* Lambda_stt *)
+K15 = Symbol["K15"]; (* Lambda_ssst *)
+K16 = Symbol["K16"]; (* Lambda_sttt *)
+K17 = Symbol["K17"]; (* Lambda_hhst *)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+thetaST = Symbol["thetaST"];
+
+(* Define the potential function V *)
+V[h_, s_, t_] := Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)/Sqrt[2]), T = ((t + z0)/Sqrt[2])},
+  ExpandAll[(muH^2)*H*H] + 
+  ExpandAll[(lambdaH/2)*(H*H)^2] +
+  ExpandAll[K1*H*H*S] + 
+  ExpandAll[K2*H*H*T] +
+  ExpandAll[((muT^2)/2)*(T^2)]  + 
+  ExpandAll[((muS^2)/2)*(S^2)] + 
+  ExpandAll[((K3/2)*H*H)*(S^2)] +
+  ExpandAll[((K4/2)*H*H)*(T^2)] +
+  ExpandAll[(K5/3)*(S^3)] + 
+  ExpandAll[(K6/3)*(T^3)] +
+  ExpandAll[K7*S] +
+  ExpandAll[K8*T] +
+  ExpandAll[(K9/4)*(S^4)] + 
+  ExpandAll[(K10/4)*(T^4)] + 
+  ExpandAll[K11*S*T] +
+  ExpandAll[(K12/2)*(S^2)*(T^2)] +
+  ExpandAll[(K13)*(S^2)*(T)] +
+  ExpandAll[(K14)*(S)*(T^2)] +
+  ExpandAll[(K15)*(S^3)*(T)] + 
+  ExpandAll[(K16)*(S)*(T^3)] + 
+  ExpandAll[(K17)H*H*S*T]
+];
+
+(* Calculate first and second derivatives for mass matrix *)
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+(* Evaluate the second derivatives at s=0, h=0, t=0 *)
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+(* Assemble the mass matrix *)
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+(* Diagonalize the mass matrix using Eigenvalues and Eigenvectors *)
+{eigenvalues, eigenvectors} = Eigensystem[massMatrixFull];
+
+(* Construct the diagonalized mass matrix *)
+diagonalizedMassMatrix = DiagonalMatrix[eigenvalues];
+
+(* Apply the eigenvectors (rotation matrix) to the original mass matrix *)
+rotationMatrix = Transpose[eigenvectors];
+diagonalizedMatrix = rotationMatrix . massMatrixFull . eigenvectors;
+
+(* Print the diagonalized mass matrix *)
+Print["Diagonalized mass matrix: ", diagonalizedMatrix];
+
+(* The eigenvalues represent the physical masses of the fields *)
+massH = eigenvalues[[1]];
+massS = eigenvalues[[2]];
+massT = eigenvalues[[3]];
+
+Print["Mass Eigenstate h1: ", massH];
+Print["Mass Eigenstate h2: ", massS];
+Print["Mass Eigenstate h3: ", massT];
+
+16/01/2025
+
+ClearAll["Global`*"]
+
+(*Define all parameters relating to expanded Lagrangian*)
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K1 = Symbol["K1"]; (* Lambda_hhs *) (*Not present in limit of Z2 symmetries*)
+K2 = Symbol["K2"];  (* Lambda_hht *) (*Not present in limit of Z2 symmetries*)
+K3 = Symbol["K3"];  (* Lambda_hhss *)
+K4 = Symbol["K4"];  (* Lambda_hhtt *)
+K5 = Symbol["K5"];  (* Lambda_sss *)(*Not present in limit of Z2 symmetries*)
+K6 = Symbol["K6"];  (* Lambda_ttt *)(*Not present in limit of Z2 symmetries*)
+K7 = Symbol["K7"];  (* Lambda_s *)(*Not present in limit of Z2 symmetries*)
+K8 = Symbol["K8"];  (* Lambda_t *)(*Not present in limit of Z2 symmetries*)
+K9 = Symbol["K9"];   (* Lambda_ssss *)
+K10 = Symbol["K10"];  (* Lambda_tttt *)
+K11 = Symbol["K11"];  (* Lambda_st *)(*Not present in limit of Z2 symmetries*)
+K12 = Symbol["K12"];  (* Lambda_sstt *)
+k13 = Symbol["K13"];  (* Lambda_sst *)(*Not present in limit of Z2 symmetries*)
+k14 = Symbol["K14"];  (* Lambda_stt *)(*Not present in limit of Z2 symmetries*)
+k15 = Symbol["K15"];  (* Lambda_ssst *)
+k16 = Symbol["K16"];  (* Lambda_sttt *)
+k17 = Symbol["K17"];  (* Lambda_hhst *)(*Not present in limit of Z2 symmetries*)
+thetaHS = Symbol["thetaHS"];
+thetaHT = Symbol["thetaHT"];
+thetaST = Symbol["thetaST"];
+
+(*Expanding Lagrangian with the addition of the two real scalar singlet fields w/out imposing Z2 symmetry*)
+V[h_, s_, t_] := 
+  Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)/Sqrt[2]), T = ((t + z0)/Sqrt[2])},
+    ExpandAll[(muH^2)*H*H] + 
+    ExpandAll[(lambdaH/2)*(H*H)^2] +
+    ExpandAll[K1*H*H*S] + 
+    ExpandAll[K2*H*H*T] +
+    ExpandAll[((muT^2)/2)*(T^2)]  + 
+    ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] +
+    ExpandAll[((K4/2)*H*H)*(T^2)] +
+    ExpandAll[(K5/3)*(S^3)] + 
+    ExpandAll[(K6/3)*(T^3)] +
+    ExpandAll[K7*S] +
+    ExpandAll[K8*T] +
+    ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + 
+    ExpandAll[K11*S*T] +
+    ExpandAll[(K12/2)*(S^2)*(T^2)] +
+    ExpandAll[(K13)*(S^2)*(T)] +
+    ExpandAll[(K14)*(S)*(T^2)] +
+    ExpandAll[(K15)*(S^3)*(T)] + 
+    ExpandAll[(K16)*(S)*(T^3)] + 
+    ExpandAll[(K17)H*H*S*T]     
+  ];
+
+(*Calculation of derivatives*)
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+(*Determining minimization conditions via Tadpole equations*)
+tadpoleVH = VH /. {s -> 0, t -> 0, h -> 0};
+tadpoleVS = VS /. {s -> 0, t -> 0, h -> 0};
+tadpoleVT = VT /. {s -> 0, t -> 0, h -> 0};
+
+Print["Tadpole minimization condition for S field:", tadpoleVS];
+Print["Tadpole minimization condition for T field:", tadpoleVT];
+Print["Tadpole minimization condition for H field:", tadpoleVH];
+
+(*Matrix elements letting the infinitesimal go to zero*)
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) evaluated at s=0, h=0, t=0: ", matrixVST];
+
+(*Mass matrix before diagonalization*)
+massMatrixFull = {
+  {matrixVHH, matrixVHS, matrixVHT},
+  {matrixVHS, matrixVSS, matrixVST},
+  {matrixVHT, matrixVST, matrixVTT}
+};
+
+(*Defining mixing angles*)
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+(*Construction of 3D rotation matrix employing mixing angles between fields*)
+rotationmatrix3D = {
+   {(c1*c2), (-s1*c2), (-s2)},
+   {(s1*c3)-(c1*s2*s3), (c1*c3)+(s1*s2*s3), -c2*s3},
+   {(c1*s2*c3)+(s1*s3), (c1*s3)-(s1*s2*c3), (c2*c3)}
+};
+
+(*Transpose of rotation matrix*)
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+(*Diagonalization of mass matrix*)
+Finalmatrix = rotationmatrix3D*massMatrixFull*rotationmatrix3Dtranspose
+
+(*Checking diagonalization and dimensions of mass matrix*)
+(*Print["Is it diagonal? ", DiagonalMatrixQ[Finalmatrix]];
+Dimensions[Finalmatrix];*)
+
+(*Elements of diagonalized matrix*)
+mHH = Finalmatrix[[1, 1]];
+mHS = Finalmatrix[[1, 2]];
+mHT = Finalmatrix[[1, 3]];
+mSH = Finalmatrix[[2, 1]];
+mSS = Finalmatrix[[2, 2]];
+mST = Finalmatrix[[2, 3]];
+mTH = Finalmatrix[[3, 1]];
+mSH = Finalmatrix[[3, 2]];
+mTT = Finalmatrix[[3, 3]];
+Print["Diagonalized mass H field:", mHH];
+Print["Diagonalized mass S field:", mSS];
+Print["Diagonalized mass T field:", mTT];
+
+(*Rotated mass base matrix*)
+massbaseMatrix = {
+    {mHH, mHS, mHT},
+    {mSH,mSS, mST},
+    {mTH,mTS,mTT}
+};
+
+Print[FullSimplify[mHT === mTH ]];
+Print[FullSimplify[mHS === mSH ]];
+Print[FullSimplify[mST === mTS ]];
+
+(*Solving for off diagonal couplings K3, K4, K12*)
+Print[Solve[mHS == 0, K3]];
+Print[Solve[mHT == 0, K4]];
+Print[Solve[mST == 0, K12]];
+Print[Solve[mSH == 0, K3]];
+Print[Solve[mTH == 0, K4]];
+Print[Solve[mTS == 0, K12]];
+
+(*Expressing the couplings that are present in the limit of Z2 imposed symmetry in terms of the other remaining parameters*)
+k3coupling = Solve[mHS == 0, K3];
+k4coupling = Solve[mHT == 0, K4];
+k12coupling = Solve[mST == 0, K12];
+
+DiagonalizedFinalMatrix = Finalmatrix /. {K3 -> k3coupling[[1, 1, 2]], 
+                                             K4 -> k4coupling[[1, 1, 2]], 
+                                             K12 -> k12coupling[[1, 1, 2]]};
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", mHH];
+Print["Mass Eigenstate h2: ", mSS];
+Print["Mass Eigenstate h3: ", mTT];
+
+01/18/2025
+
+ClearAll["Global`*"]
+
+(*Define all parameters relating to expanded Lagrangian*)
+muS = Symbol["muS"];
+muH = Symbol["muH"];
+muT = Symbol["muT"];
+lambdaH = Symbol["lambdaH"];
+K1 = Symbol[
+   "K1"]; (*Lambda_hhs*) (*Not present in limit of Z2 symmetries*)
+K2 = Symbol[
+   "K2"];  (*Lambda_hht*) (*Not present in limit of Z2 symmetries*)
+K3 = Symbol["K3"];  (*Lambda_hhss*)
+K4 = Symbol["K4"];  (*Lambda_hhtt*)
+K5 = Symbol[
+   "K5"];  (*Lambda_sss*)(*Not present in limit of Z2 symmetries*)
+K6 = Symbol[
+   "K6"];  (*Lambda_ttt*)(*Not present in limit of Z2 symmetries*)
+K7 = Symbol[
+   "K7"];  (*Lambda_s*)(*Not present in limit of Z2 symmetries*)
+K8 = Symbol[
+   "K8"];  (*Lambda_t*)(*Not present in limit of Z2 symmetries*)
+K9 = Symbol["K9"];   (*Lambda_ssss*)
+K10 = Symbol["K10"];  (*Lambda_tttt*)
+K11 = Symbol[
+   "K11"];  (*Lambda_st*)(*Not present in limit of Z2 symmetries*)
+K12 = Symbol["K12"];  (*Lambda_sstt*)
+k13 = Symbol[
+   "K13"];  (*Lambda_sst*)(*Not present in limit of Z2 symmetries*)
+k14 = Symbol[
+   "K14"];  (*Lambda_stt*)(*Not present in limit of Z2 symmetries*)
+k15 = Symbol["K15"];  (*Lambda_ssst*)
+k16 = Symbol["K16"];  (*Lambda_sttt*)
+k17 = Symbol[
+   "K17"];  (*Lambda_hhst*)(*Not present in limit of Z2 symmetries*)
+thetaHS = Symbol["thetaHS"]; (*Mixing angle*)
+thetaHT = Symbol["thetaHT"]; (*Mixing angle*)
+thetaST = Symbol["thetaST"]; (*Mixing angle*)
+
+(*Expanding Lagrangian with the addition of the two real scalar \
+singlet fields w/out imposing Z2 symmetry*)
+V[h_, s_, t_] := 
+  Module[{H = ((h + v0)/Sqrt[2]), S = ((s + x0)/Sqrt[2]), 
+    T = ((t + z0)/Sqrt[2])}, 
+   ExpandAll[(muH^2)*H*H] + ExpandAll[(lambdaH/2)*(H*H)^2] + 
+    ExpandAll[K1*H*H*S] + ExpandAll[K2*H*H*T] + 
+    ExpandAll[((muT^2)/2)*(T^2)] + ExpandAll[((muS^2)/2)*(S^2)] + 
+    ExpandAll[((K3/2)*H*H)*(S^2)] + ExpandAll[((K4/2)*H*H)*(T^2)] + 
+    ExpandAll[(K5/3)*(S^3)] + ExpandAll[(K6/3)*(T^3)] + 
+    ExpandAll[K7*S] + ExpandAll[K8*T] + ExpandAll[(K9/4)*(S^4)] + 
+    ExpandAll[(K10/4)*(T^4)] + ExpandAll[K11*S*T] + 
+    ExpandAll[(K12/2)*(S^2)*(T^2)] + ExpandAll[(K13)*(S^2)*(T)] + 
+    ExpandAll[(K14)*(S)*(T^2)] + ExpandAll[(K15)*(S^3)*(T)] + 
+    ExpandAll[(K16)*(S)*(T^3)] + ExpandAll[(K17) H*H*S*T]];
+
+(*Calculation of derivatives*)
+VS = D[V[h, s, t], s];
+VH = D[V[h, s, t], h];
+VT = D[V[h, s, t], t];
+VHH = D[V[h, s, t], {h, 2}];
+VSS = D[V[h, s, t], {s, 2}];
+VTT = D[V[h, s, t], {t, 2}];
+VHS = D[V[h, s, t], h, s];
+VHT = D[V[h, s, t], h, t];
+VST = D[V[h, s, t], s, t];
+
+(*Determining minimization conditions via Tadpole equations*)
+tadpoleVH = VH /. {s -> 0, t -> 0, h -> 0};
+tadpoleVS = VS /. {s -> 0, t -> 0, h -> 0};
+tadpoleVT = VT /. {s -> 0, t -> 0, h -> 0};
+
+Print["Tadpole minimization condition for S field:", tadpoleVS];
+Print["Tadpole minimization condition for T field:", tadpoleVT];
+Print["Tadpole minimization condition for H field:", tadpoleVH];
+
+(*Matrix elements letting the infinitesimal go to zero*)
+matrixVHH = VHH /. {s -> 0, t -> 0, h -> 0};
+matrixVSS = VSS /. {s -> 0, t -> 0, h -> 0};
+matrixVTT = VTT /. {s -> 0, t -> 0, h -> 0};
+matrixVHS = VHS /. {s -> 0, t -> 0, h -> 0};
+matrixVHT = VHT /. {s -> 0, t -> 0, h -> 0};
+matrixVST = VST /. {s -> 0, t -> 0, h -> 0};
+
+Print["Second derivative with respect to field h (VHH) evaluated at \
+s=0, h=0, t=0: ", matrixVHH];
+Print["Second derivative with respect to field s (VSS) evaluated at \
+s=0, h=0, t=0: ", matrixVSS];
+Print["Second derivative with respect to field t (VTT) evaluated at \
+s=0, h=0, t=0: ", matrixVTT];
+Print["Second derivative with respect to mixed field h,s (VHS) \
+evaluated at s=0, h=0, t=0: ", matrixVHS];
+Print["Second derivative with respect to mixed field h,t (VHT) \
+evaluated at s=0, h=0, t=0: ", matrixVHT];
+Print["Second derivative with respect to mixed field s,t (VST) \
+evaluated at s=0, h=0, t=0: ", matrixVST];
+
+(*Mass matrix before diagonalization*)
+massMatrixFull = {{matrixVHH, matrixVHS, matrixVHT}, {matrixVHS, 
+    matrixVSS, matrixVST}, {matrixVHT, matrixVST, matrixVTT}};
+
+(*Defining mixing angles*)
+c1 = Cos[thetaHS];
+c2 = Cos[thetaHT];
+c3 = Cos[thetaST];
+s1 = Sin[thetaHS];
+s2 = Sin[thetaHT];
+s3 = Sin[thetaST];
+
+(*Construction of 3D rotation matrix employing mixing angles between \
+fields*)
+rotationmatrix3D = {{(c1*c2), (-s1*
+      c2), (-s2)}, {(s1*c3) - (c1*s2*s3), (c1*c3) + (s1*s2*s3), -c2*
+     s3}, {(c1*s2*c3) + (s1*s3), (c1*s3) - (s1*s2*c3), (c2*c3)}};
+
+(*Transpose of rotation matrix*)
+rotationmatrix3Dtranspose = Transpose[rotationmatrix3D];
+
+(*Diagonalization of mass matrix*)
+Finalmatrix = rotationmatrix3D*massMatrixFull*rotationmatrix3Dtranspose
+
+(*Checking diagonalization and dimensions of mass matrix*)
+(*Print["Is it diagonal? ",DiagonalMatrixQ[Finalmatrix]];
+Dimensions[Finalmatrix];*)
+
+(*Elements of diagonalized matrix*)
+mHH = Finalmatrix[[1, 1]];
+mHS = Finalmatrix[[1, 2]];
+mHT = Finalmatrix[[1, 3]];
+mSH = Finalmatrix[[2, 1]];
+mSS = Finalmatrix[[2, 2]];
+mST = Finalmatrix[[2, 3]];
+mTH = Finalmatrix[[3, 1]];
+mTS = Finalmatrix[[3, 2]];
+mTT = Finalmatrix[[3, 3]];
+
+Print["Mass Eigenstate h1: ", mHH];
+Print["Mass Eigenstate h2: ", mSS];
+Print["Mass Eigenstate h3: ", mTT];
+
+Print["Diagonalized mass mixed H and S fields:", mHS];
+Print["Diagonalized mass mixed H and T fields:", mHT];
+Print["Diagonalized mass mixed S and T fields:", mST];
+
+(*Rotated mass base matrix*)
+massbaseMatrix = {{mHH, mHS, mHT}, {mSH, mSS, mST}, {mTH, mTS, mTT}};
+
+(*Check that the mixed fields corresponding to the same fields are \
+equal*)
+Print[FullSimplify[mHT === mTH]];
+Print[FullSimplify[mHS === mSH]];
+Print[FullSimplify[mST === mTS]];
+
+(*Solving for off diagonal couplings K3,K4,K12*)
+Print[Solve[mHS == 0, K3]];
+Print[Solve[mHT == 0, K4]];
+Print[Solve[mST == 0, K12]];
+Print[Solve[mSH == 0, K3]];
+Print[Solve[mTH == 0, K4]];
+Print[Solve[mTS == 0, K12]];
+
+(*Expressing the couplings that are present in the limit of Z2 \
+imposed symmetry in terms of the other remaining parameters*)
+k3coupling = Solve[mHS == 0, K3];
+k4coupling = Solve[mHT == 0, K4];
+k12coupling = Solve[mST == 0, K12];
+
+(*Replace K3,K4,K12 couplings in mass matrix*)
+DiagonalizedFinalMatrix = 
+  Finalmatrix /. {K3 -> k3coupling[[1, 1, 2]], 
+    K4 -> k4coupling[[1, 1, 2]], K12 -> k12coupling[[1, 1, 2]]};
+
+massH = DiagonalizedFinalMatrix[[1, 1]];
+massS = DiagonalizedFinalMatrix[[2, 2]];
+massT = DiagonalizedFinalMatrix[[3, 3]];
+
+Print["Mass Eigenstate with substituted K3:", massH];
+Print["Mass Eigenstate with substituted K4:", massS];
+Print["Mass Eigenstate with substituted K12:", massT];
