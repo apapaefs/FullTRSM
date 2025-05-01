@@ -524,7 +524,7 @@ baseDir = FileNameJoin[{
    "C:", "Users", "corin", "OneDrive", "Desktop", 
    "HEP Phenomenology", 
    "Matter-Anti-Matter Electroweak Baryogenesis Thesis", 
-   "TRSM Mathematica", "Couplings"
+   "TRSM Mathematica", "Couplings", "nonlinear"
 }];
 exportCouplingData[fileName_String, expr_] := 
  Export[FileNameJoin[{baseDir, fileName}], expr];
