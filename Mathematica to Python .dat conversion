@@ -1,0 +1,20 @@
+import math
+import numpy as np 
+import re 
+import sympy as sy
+  
+file_numbers = [111, 112, 113, 122, 123, 133, 222, 223, 233, 333, 
+                1111, 1112, 1113, 1122, 1123, 1133, 1222, 1223, 1233, 1333, 2222, 2223, 2233, 2333, 3333]
+
+for num in file_numbers:
+    d_file = f'/home/cmsphysics/FTRSM/DAT/MATHEMATICA/{num}.dat'
+    dat_file = f'/home/cmsphysics/FTRSM/DAT/PYTHON/{num}.dat'
+
+    with open(d_file, 'r') as file:
+        dat = file.read()
+
+    dat = re.sub(r"Sqrt\[(.*?)\]", r"np.sqrt(\1)", dat)
+    dat = dat.replace("^", "**")
+    
+    with open(dat_file, 'w') as file:
+        file.write(dat)
