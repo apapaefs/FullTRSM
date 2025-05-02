@@ -96,34 +96,7 @@ rule127=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMa
 rule128=Flatten[Solve[GaugeMassmatrix[[2,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,2]], Subscript[\[Lambda], sss]]];
 rule129=Flatten[Solve[GaugeMassmatrix[[3,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,3]], Subscript[\[Lambda], xxx]]];
 
-(*rule11=Flatten[Solve[GaugeMassmatrix[[1,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,1]],Subscript[\[Lambda], hh]]];
-rule12=Flatten[Solve[GaugeMassmatrix[[1,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,2]],Subscript[\[Lambda], hhss]]];
-rule13=Flatten[Solve[GaugeMassmatrix[[1,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[1,3]],Subscript[\[Lambda], hhxx]]];
-rule21=Flatten[Solve[GaugeMassmatrix[[2,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,1]],Subscript[\[Lambda], hhss]]];
-rule23=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], ssxx]]];
-rule31=Flatten[Solve[GaugeMassmatrix[[3,1]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,1]],Subscript[\[Lambda], hhxx]]];
-rule32=Flatten[Solve[GaugeMassmatrix[[3,2]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[3,2]], Subscript[\[Lambda], ssxx]]];
-rule118=Flatten[Solve[GaugeMassmatrix[[2,3]]==Simplify[Transpose[Rmat2] . MassMatrix . Rmat2][[2,3]], Subscript[\[Lambda], ssx]]];*) (*Adding 1 add coupling to FTRSM*)
-
 RulesCuadratic={rule11[[1]],rule12[[1]],rule13[[1]],rule21[[1]],rule23[[1]],rule31[[1]],rule32[[1]]};
-(*                
-Print[rule113[[1]]];
-Print[rule114[[1]]];
-Print[rule115[[1]]];
-Print[rule116[[1]]];
-Print[rule117[[1]]];
-Print[rule118[[1]]];
-Print[rule119[[1]]];
-Print[rule120[[1]]];
-Print[rule121[[1]]];
-Print[rule122[[1]]];
-Print[rule123[[1]]];
-Print[rule124[[1]]];
-Print[rule125[[1]]];
-Print[rule126[[1]]];
-Print[rule127[[1]]];
-Print[rule128[[1]]];
-Print[rule129[[1]]];*)
 
 phys={h1,h2,h3};
 gaugen=Transpose[Rmat2] . phys;
@@ -224,28 +197,6 @@ Subscript[\[Lambda], hhss]-> K14,
 Subscript[\[Lambda], hhxx]-> K15,
 Subscript[\[Lambda], ssxx]-> K16};
 
-CouplingSingleOdd={Subscript[v, s]->ReplaceVs,
-Subscript[v, x]->ReplaceVx,
-Subscript[\[CapitalTheta], h] -> ReplaceThetah,
-Subscript[\[CapitalTheta], s] -> ReplaceThetaS,
-Subscript[\[CapitalTheta], x] -> ReplaceThetaX
-Subscript[\[Lambda], sx]-> 0.,
-Subscript[\[Lambda], ssx]-> K2,
-Subscript[\[Lambda], sxx]-> 0.,
-Subscript[\[Lambda], hhx]-> 0.,
-Subscript[\[Lambda], hhs]-> 0.,
-Subscript[\[Lambda], sssx]-> 0.,
-Subscript[\[Lambda], sxxx]-> 0.,
-Subscript[\[Lambda], xxxx]-> K8,
-Subscript[\[Lambda], ssss]-> K9,
-Subscript[\[Lambda], hhsx]-> 0.,
-Subscript[\[Lambda], sss]-> 0.,
-Subscript[\[Lambda], xxx]-> 0.,
-Subscript[\[Lambda], hh]-> K13,
-Subscript[\[Lambda], hhss]-> K14,
-Subscript[\[Lambda], hhxx]-> K15,
-Subscript[\[Lambda], ssxx]-> K16};
-
 RulesNumeric={R11->Rnum[[1,1]],R12->Rnum[[1,2]],R13->Rnum[[1,3]],R21->Rnum[[2,1]],R22->Rnum[[2,2]],R23->Rnum[[2,3]],R31->Rnum[[3,1]],R32->Rnum[[3,2]],R33->Rnum[[3,3]],
               v->246,
 Subscript[v, s]->990,
@@ -268,35 +219,6 @@ Subscript[\[Lambda], ssss]-> K9,
 Subscript[\[Lambda], hhsx]-> K10,
 Subscript[\[Lambda], xxx]-> K11,
 Subscript[\[Lambda], sss]-> K12,
-Subscript[\[Lambda], hh]-> K13,
-Subscript[\[Lambda], hhss]-> K14,
-Subscript[\[Lambda], hhxx]-> K15,
-Subscript[\[Lambda], ssxx]-> K16
-};
-
-(*Check limit TRSM plus S^2*X given some value for couplings*)
-RulesSingleOdd={R11->Rnum[[1,1]],R12->Rnum[[1,2]],R13->Rnum[[1,3]],R21->Rnum[[2,1]],R22->Rnum[[2,2]],R23->Rnum[[2,3]],R31->Rnum[[3,1]],R32->Rnum[[3,2]],R33->Rnum[[3,3]],
-              v->246,
-Subscript[v, s]->990,
-Subscript[v, x]->310,
-M1->125,
-M2->126,
-M3->255,
-Subscript[\[CapitalTheta], h] -> ReplaceThetah,
-Subscript[\[CapitalTheta], s] -> ReplaceThetaS,
-Subscript[\[CapitalTheta], x] -> ReplaceThetaX, 
-Subscript[\[Lambda], sx]-> 0.,
-Subscript[\[Lambda], ssx]-> K2,
-Subscript[\[Lambda], sxx]-> 0.,
-Subscript[\[Lambda], hhx]-> 0.,
-Subscript[\[Lambda], hhs]-> 0.,
-Subscript[\[Lambda], sssx]-> 0.,
-Subscript[\[Lambda], sxxx]-> 0.,
-Subscript[\[Lambda], xxxx]-> K8,
-Subscript[\[Lambda], ssss]-> K9,
-Subscript[\[Lambda], hhsx]-> 0.,
-Subscript[\[Lambda], xxx]-> 0.,
-Subscript[\[Lambda], sss]-> 0.,
 Subscript[\[Lambda], hh]-> K13,
 Subscript[\[Lambda], hhss]-> K14,
 Subscript[\[Lambda], hhxx]-> K15,
@@ -326,7 +248,6 @@ QuarticCouplings = {
 };
 
 (************CORINE COUPLINGS FTRSM*************)
-(*
 Print["**************************************************************************************************************"]
 Print["********************************************CUBIC COUPLINGS****************************************************"]
 Print["**************************************************************************************************************"]
@@ -343,62 +264,23 @@ Print["222.dat: ", CubicModule[h2^3]];
 Print["223.dat: ", CubicModule[h2^2 * h3]];
 Print["233.dat: ", CubicModule[h2*h3^2]]; 
 Print["333.dat: ", CubicModule[h3^3]]; 
-Print[""]; *) (*
-Print["**************************************************************************************************************"]
-Print[""];
-Print["CUBIC COUPLINGS GENERATED USING CubicModel WITH PARAMETER REPLACEMENTS & ONE ODD COUPLING: "];
-Print[""];
-Print["111.dat: ", CubicModule[h1^3]/.CouplingSingleOdd]; 
-Print["112.dat: ", CubicModule[h1^2 * h2]/.CouplingSingleOdd]; 
-Print["113.dat: ", CubicModule[h1^2 * h3]/.CouplingSingleOdd]; 
-Print["122.dat: ", CubicModule[h1*h2^2]/.CouplingSingleOdd];
-Print["123.dat: ", CubicModule[h1 * h2 * h3]/.CouplingSingleOdd];
-Print["133.dat: ", CubicModule[h1*h3^2]/.CouplingSingleOdd];
-Print["222.dat: ", CubicModule[h2^3]/.CouplingSingleOdd]; 
-Print["223.dat: ", CubicModule[h2^2 * h3]/.CouplingSingleOdd];
-Print["233.dat: ", CubicModule[h2*h3^2]/.CouplingSingleOdd]; 
-Print["333.dat: ", CubicModule[h3^3]/.CouplingSingleOdd]; 
+Print[""]; 
 
 Print["**************************************************************************************************************"]
 
 Print["CUBIC COUPLINGS USING CubicModel MODEL EVALUATED AT BENCHMARK SCENARIOS: "]
 
-Print["111.dat: ", CubicModule[h1^3]/.RulesSingleOdd]; 
-Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesSingleOdd]; 
-Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesSingleOdd]; 
-Print["122.dat: ", CubicModule[h1*h2^2]/.RulesSingleOdd];
-Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesSingleOdd];
-Print["133.dat: ", CubicModule[h1*h3^2]/.RulesSingleOdd];
-Print["222.dat: ", CubicModule[h2^3]/.RulesSingleOdd]; 
-Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesSingleOdd];
-Print["233.dat: ", CubicModule[h2*h3^2]/.RulesSingleOdd]; 
-Print["333.dat: ", CubicModule[h3^3]/.RulesSingleOdd]; 
-Print[""]; *)(*
-Print["**************************************************************************************************************"]
+Print["111.dat: ", CubicModule[h1^3]/.RulesNumeric]; 
+Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesNumeric]; 
+Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesNumeric]; 
+Print["122.dat: ", CubicModule[h1*h2^2]/.RulesNumeric];
+Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesNumeric];
+Print["133.dat: ", CubicModule[h1*h3^2]/.RulesNumeric];
+Print["222.dat: ", CubicModule[h2^3]/.RulesNumeric]; 
+Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesNumeric];
+Print["233.dat: ", CubicModule[h2*h3^2]/.RulesNumeric]; 
+Print["333.dat: ", CubicModule[h3^3]/.RulesNumeric]; 
 Print[""]; 
-Print["CUBIC COUPLINGS GENERATED USING S_ijk EVALUATED AT BENCHMARK SCENARIOS ONE ODD COUPLING: "]
-Print[""];
-Print["111.dat ", Saaa[1]];
-Print["112.dat ", Sabb[2,1]];
-Print["113.dat ", Sabb[3,1]];
-Print["122.dat ", Sabb[1,2]];
-Print["123.dat ", Sabc[1,2,3]];
-Print["133.dat ", Sabb[1,3]];
-Print["222.dat ", Saaa[2]];
-Print["223.dat ", Sabb[3,2]];
-Print["233.dat ", Sabb[2,3]];
-Print["333.dat ", Saaa[3]];
-Print["111.dat ", Saaa[1]/.CouplingSingleOdd];
-Print["112.dat ", Sabb[2,1]/.CouplingSingleOdd];
-Print["113.dat ", Sabb[3,1]/.CouplingSingleOdd];
-Print["122.dat ", Sabb[1,2]/.CouplingSingleOdd];
-Print["123.dat ", Sabc[1,2,3]/.CouplingSingleOdd];
-Print["133.dat ", Sabb[1,3]/.CouplingSingleOdd];
-Print["222.dat ", Saaa[2]/.CouplingSingleOdd];
-Print["223.dat ", Sabb[3,2]/.CouplingSingleOdd];
-Print["233.dat ", Sabb[2,3]/.CouplingSingleOdd];
-Print["333.dat ", Saaa[3]/.CouplingSingleOdd];
-Print[""]; *)(*
 Print["**************************************************************************************************************"]
 Print["******************************************QUARTIC COUPLINGS****************************************************"]
 Print["**************************************************************************************************************"]
@@ -420,102 +302,27 @@ Print["2223.dat ", QuarticModule[h2^3*h3]];
 Print["2233.dat ", QuarticModule[h2^2*h3^2]];
 Print["2333.dat ", QuarticModule[h2*h3^3]];
 Print["3333.dat ", QuarticModule[h3^4]]; 
-Print[""]; *)(*
+Print[""]; 
 Print["**************************************************************************************************************"]
 Print[""];
 Print["QUARTIC COUPLINGS GENERATED USING QuarticModule WITH PARAMETER REPLACEMENTS & ONE ODD COUPLING: "]
 Print[""];
-Print["1111.dat ", QuarticModule[h1^4]/.CouplingSingleOdd];
-Print["1112.dat ", QuarticModule[h1^3*h2]/.CouplingSingleOdd];
-Print["1113.dat ", QuarticModule[h1^3*h3]/.CouplingSingleOdd];
-Print["1122.dat ", QuarticModule[h1^2*h2^2]/.CouplingSingleOdd];
-Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.CouplingSingleOdd];
-Print["1133.dat ", QuarticModule[h1^2*h3^2]/.CouplingSingleOdd];
-Print["1222.dat ", QuarticModule[h1*h3^3]/.CouplingSingleOdd];
-Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.CouplingSingleOdd];
-Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.CouplingSingleOdd];
-Print["1333.dat ", QuarticModule[h1*h3^3]/.CouplingSingleOdd];
-Print["2222.dat ", QuarticModule[h2^4]/.CouplingSingleOdd];
-Print["2223.dat ", QuarticModule[h2^3*h3]/.CouplingSingleOdd];
-Print["2233.dat ", QuarticModule[h2^2*h3^2]/.CouplingSingleOdd];
-Print["2333.dat ", QuarticModule[h2*h3^3]/.CouplingSingleOdd];
-Print["3333.dat ", QuarticModule[h3^4]/.CouplingSingleOdd]; 
+Print["1111.dat ", QuarticModule[h1^4]/.RulesNumeric];
+Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesNumeric];
+Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesNumeric];
+Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesNumeric];
+Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesNumeric];
+Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesNumeric];
+Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
+Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesNumeric];
+Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesNumeric];
+Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
+Print["2222.dat ", QuarticModule[h2^4]/.RulesNumeric];
+Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesNumeric];
+Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesNumeric];
+Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesNumeric];
+Print["3333.dat ", QuarticModule[h3^4]/.RulesNumeric]; 
 Print[""];
-Print["**************************************************************************************************************"]
-Print[""];
-Print["QUARTIC COUPLINGS USING QuarticModule EVALUATED AT BENCHMARK SCENARIOS"];
-Print[""];
-Print["1111.dat ", QuarticModule[h1^4]/.RulesSingleOdd];
-Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesSingleOdd];
-Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesSingleOdd];
-Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesSingleOdd];
-Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesSingleOdd];
-Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesSingleOdd];
-Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesSingleOdd];
-Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesSingleOdd];
-Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesSingleOdd];
-Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesSingleOdd];
-Print["2222.dat ", QuarticModule[h2^4]/.RulesSingleOdd];
-Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesSingleOdd];
-Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesSingleOdd];
-Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesSingleOdd];
-Print["3333.dat ", QuarticModule[h3^4]/.RulesSingleOdd]; 
-Print[""];
-Print["**************************************************************************************************************"]
-Print[""]; *) (*
-Print["QUARTIC COUPLINGS GENERATED USING S_ijkl EVALUATED AT BENCHMARK SCENARIOS: "]
-Print[""];
-Print["1123.dat ", EvenSaabc[1,2,3]];
-Print["1123.dat ", EvenSaabc[1,2,3]/.CouplingSingleOdd];
-Print["1123.dat ", OddSaabc[1,2,3]];
-Print["1123.dat ", OddSaabc[1,2,3]/.CouplingSingleOdd];
-Print["1111.dat ", Saaaa[1]/.CouplingSingleOdd];
-Print["1112.dat ", Saaab[1,2]/.CouplingSingleOdd];
-Print["1113.dat ", Saaab[1,3]/.CouplingSingleOdd];
-Print["1122.dat ", Saabb[1,2]/.CouplingSingleOdd];
-
-Print["1133.dat ", Saabb[1,3]/.CouplingSingleOdd];
-Print["1222.dat ", Saaab[2,1]/.CouplingSingleOdd];
-Print["1223.dat ", Saabc[2,1,3]/.CouplingSingleOdd];
-Print["1233.dat ", Saabc[3,1,2]/.CouplingSingleOdd];
-Print["1333.dat ", Saaab[3,1]/.CouplingSingleOdd];
-Print["2222.dat ", Saaaa[2]/.CouplingSingleOdd];
-Print["2223.dat ", Saaab[2,3]/.CouplingSingleOdd];
-Print["2233.dat ", Saabb[2,3]/.CouplingSingleOdd];
-Print["2333.dat ", Saaab[3,2]/.CouplingSingleOdd];
-Print["3333.dat ", Saaaa[3]/.CouplingSingleOdd]; 
-Print[""];  *)(*
-Print["**************************************************************************************************************"]
-Print["**************************************************************************************************************"];
-Print["************************************************CHOP CHECK*****************************************************"];
-Print["**************************************************************************************************************"];
-Print[""]; 
-(*"Chop check", i.e Does the subtraction of the two methods of generation when evaluated at the numerical benchmark scenarios
-equal zero*)
-Print["---------> CHOP CHECK 111.dat: "]
-Print[""]; 
-Print["111.dat from cubicmodule numeric evaluation: ", CubicModule[h1^3]/.RulesNumeric];
-Print["111.dat from Saaa numeric evaluation: ", Saaa[1]/.RulesNumeric];
-Print["Chop check: ", (CubicModule[h1^3]-Saaa[1])/.RulesNumeric];
-Print[""]; 
-Print["---------> CHOP CHECK 112.dat: "]
-Print[""]; 
-Print["112.dat from cubicmodule numeric evaluation: ", CubicModule[h1^2 * h2]/.RulesNumeric];
-Print["112.dat from Sabb numeric evaluation: ", Sabb[2,1]/.RulesNumeric];
-Print["Chop check: ", (CubicModule[h1^2*h2]-Sabb[2,1])/.RulesNumeric];
-Print[""]; 
-Print["---------> CHOP CHECK 1111.dat: "]
-Print[""]; 
-Print["1111.dat from quarticmodule numeric evaluation: ", QuarticModule[h1^4]/.RulesNumeric];
-Print["1111.dat from Saaaa numeric evaluation: ", Saaaa[1]/.RulesNumeric];
-Print["Chop check: ", (QuarticModule[h1^4]-Saaaa[1])/.RulesNumeric];
-Print[""]; 
-Print["---------> CHOP CHECK 1112.dat: "]
-Print[""]; 
-Print["1112.dat from quarticmodule numeric evaluation: ", QuarticModule[h1^3*h2]/.RulesNumeric];
-Print["1112.dat from Saaab numeric evaluation: ", Saaab[1,2]/.RulesNumeric];
-Print["Chop check: ", (QuarticModule[h1^3*h2]-Saaab[1,2])/.RulesNumeric];
-Print[""]; *)
 Print["**************************************************************************************************************"];
 Print["*********************************************GENERATING .DAT FILES FOR UCF APPS*******************************"];
 Print["**************************************************************************************************************"];
@@ -529,29 +336,29 @@ baseDir = FileNameJoin[{
 exportCouplingData[fileName_String, expr_] := 
  Export[FileNameJoin[{baseDir, fileName}], expr];
  
-exportCouplingData["111_nonlinear.dat", CubicModule[h1^3] /. RulesSingleOdd];
-exportCouplingData["112_nonlinear.dat", CubicModule[h1^2*h2] /. RulesSingleOdd];
-exportCouplingData["113_nonlinear.dat", CubicModule[h1^2*h3] /. RulesSingleOdd];
-exportCouplingData["122_nonlinear.dat", CubicModule[h1*h2^2] /. RulesSingleOdd];
-exportCouplingData["123_nonlinear.dat", CubicModule[h1*h2*h3] /. RulesSingleOdd];
-exportCouplingData["133_nonlinear.dat", CubicModule[h1*h3^2] /. RulesSingleOdd];
-exportCouplingData["222_nonlinear.dat", CubicModule[h2^3] /. RulesSingleOdd];
-exportCouplingData["223_nonlinear.dat", CubicModule[h2^2*h3] /. RulesSingleOdd];
-exportCouplingData["233_nonlinear.dat", CubicModule[h2*h3^2] /. RulesSingleOdd];
-exportCouplingData["333_nonlinear.dat", CubicModule[h3^3] /. RulesSingleOdd];
+exportCouplingData["111_nonlinear.dat", CubicModule[h1^3] /. RulesNumeric];
+exportCouplingData["112_nonlinear.dat", CubicModule[h1^2*h2] /. RulesNumeric];
+exportCouplingData["113_nonlinear.dat", CubicModule[h1^2*h3] /. RulesNumeric];
+exportCouplingData["122_nonlinear.dat", CubicModule[h1*h2^2] /. RulesNumeric];
+exportCouplingData["123_nonlinear.dat", CubicModule[h1*h2*h3] /. RulesNumeric];
+exportCouplingData["133_nonlinear.dat", CubicModule[h1*h3^2] /. RulesNumeric];
+exportCouplingData["222_nonlinear.dat", CubicModule[h2^3] /. RulesNumeric];
+exportCouplingData["223_nonlinear.dat", CubicModule[h2^2*h3] /. RulesNumeric];
+exportCouplingData["233_nonlinear.dat", CubicModule[h2*h3^2] /. RulesNumeric];
+exportCouplingData["333_nonlinear.dat", CubicModule[h3^3] /. RulesNumeric];
 
-exportCouplingData["1111_nonlinear.dat", QuarticModule[h1^4] /. RulesSingleOdd];
-exportCouplingData["1112_nonlinear.dat", QuarticModule[h1^3*h2] /. RulesSingleOdd];
-exportCouplingData["1113_nonlinear.dat", QuarticModule[h1^3*h3] /. RulesSingleOdd];
-exportCouplingData["1122_nonlinear.dat", QuarticModule[h1^2*h2^2] /. RulesSingleOdd];
-exportCouplingData["1123_nonlinear.dat", QuarticModule[h1^2*h2*h3] /. RulesSingleOdd];
-exportCouplingData["1133_nonlinear.dat", QuarticModule[h1^2*h3^2] /. RulesSingleOdd];
-exportCouplingData["1222_nonlinear.dat", QuarticModule[h1*h2^3] /. RulesSingleOdd];
-exportCouplingData["1223_nonlinear.dat", QuarticModule[h1*h2^2*h3] /. RulesSingleOdd];
-exportCouplingData["1233_nonlinear.dat", QuarticModule[h1*h2*h3^2] /. RulesSingleOdd];
-exportCouplingData["1333_nonlinear.dat", QuarticModule[h1*h3^3] /. RulesSingleOdd];
-exportCouplingData["2222_nonlinear.dat", QuarticModule[h2^4] /. RulesSingleOdd];
-exportCouplingData["2223_nonlinear.dat", QuarticModule[h2^3*h3] /. RulesSingleOdd];
-exportCouplingData["2233_nonlinear.dat", QuarticModule[h2^2*h3^2] /. RulesSingleOdd];
-exportCouplingData["2333_nonlinear.dat", QuarticModule[h2*h3^3] /. RulesSingleOdd];
-exportCouplingData["3333_nonlinear.dat", QuarticModule[h3^4] /. RulesSingleOdd];
+exportCouplingData["1111_nonlinear.dat", QuarticModule[h1^4] /. RulesNumeric];
+exportCouplingData["1112_nonlinear.dat", QuarticModule[h1^3*h2] /. RulesNumeric];
+exportCouplingData["1113_nonlinear.dat", QuarticModule[h1^3*h3] /. RulesNumeric];
+exportCouplingData["1122_nonlinear.dat", QuarticModule[h1^2*h2^2] /. RulesNumeric];
+exportCouplingData["1123_nonlinear.dat", QuarticModule[h1^2*h2*h3] /. RulesNumeric];
+exportCouplingData["1133_nonlinear.dat", QuarticModule[h1^2*h3^2] /. RulesNumeric];
+exportCouplingData["1222_nonlinear.dat", QuarticModule[h1*h2^3] /. RulesNumeric];
+exportCouplingData["1223_nonlinear.dat", QuarticModule[h1*h2^2*h3] /. RulesNumeric];
+exportCouplingData["1233_nonlinear.dat", QuarticModule[h1*h2*h3^2] /. RulesNumeric];
+exportCouplingData["1333_nonlinear.dat", QuarticModule[h1*h3^3] /. RulesNumeric];
+exportCouplingData["2222_nonlinear.dat", QuarticModule[h2^4] /. RulesNumeric];
+exportCouplingData["2223_nonlinear.dat", QuarticModule[h2^3*h3] /. RulesNumeric];
+exportCouplingData["2233_nonlinear.dat", QuarticModule[h2^2*h3^2] /. RulesNumeric];
+exportCouplingData["2333_nonlinear.dat", QuarticModule[h2*h3^3] /. RulesNumeric];
+exportCouplingData["3333_nonlinear.dat", QuarticModule[h3^4] /. RulesNumeric];
