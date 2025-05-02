@@ -248,6 +248,7 @@ QuarticCouplings = {
 };
 
 (************CORINE COUPLINGS FTRSM*************)
+(*
 Print["**************************************************************************************************************"]
 Print["********************************************CUBIC COUPLINGS****************************************************"]
 Print["**************************************************************************************************************"]
@@ -270,16 +271,16 @@ Print["*************************************************************************
 
 Print["CUBIC COUPLINGS USING CubicModel MODEL EVALUATED AT BENCHMARK SCENARIOS: "]
 
-Print["111.dat: ", CubicModule[h1^3]/.RulesNumeric]; 
-Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesNumeric]; 
-Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesNumeric]; 
-Print["122.dat: ", CubicModule[h1*h2^2]/.RulesNumeric];
-Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesNumeric];
-Print["133.dat: ", CubicModule[h1*h3^2]/.RulesNumeric];
-Print["222.dat: ", CubicModule[h2^3]/.RulesNumeric]; 
-Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesNumeric];
-Print["233.dat: ", CubicModule[h2*h3^2]/.RulesNumeric]; 
-Print["333.dat: ", CubicModule[h3^3]/.RulesNumeric]; 
+Print["111.dat: ", CubicModule[h1^3]/.RulesCouplings]; 
+Print["112.dat: ", CubicModule[h1^2 * h2]/.RulesCouplings]; 
+Print["113.dat: ", CubicModule[h1^2 * h3]/.RulesCouplings]; 
+Print["122.dat: ", CubicModule[h1*h2^2]/.RulesCouplings];
+Print["123.dat: ", CubicModule[h1 * h2 * h3]/.RulesCouplings];
+Print["133.dat: ", CubicModule[h1*h3^2]/.RulesCouplings];
+Print["222.dat: ", CubicModule[h2^3]/.RulesCouplings]; 
+Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesCouplings];
+Print["233.dat: ", CubicModule[h2*h3^2]/.RulesCouplings]; 
+Print["333.dat: ", CubicModule[h3^3]/.RulesCouplings]; 
 Print[""]; 
 Print["**************************************************************************************************************"]
 Print["******************************************QUARTIC COUPLINGS****************************************************"]
@@ -307,22 +308,23 @@ Print["*************************************************************************
 Print[""];
 Print["QUARTIC COUPLINGS GENERATED USING QuarticModule WITH PARAMETER REPLACEMENTS & ONE ODD COUPLING: "]
 Print[""];
-Print["1111.dat ", QuarticModule[h1^4]/.RulesNumeric];
-Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesNumeric];
-Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesNumeric];
-Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesNumeric];
-Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesNumeric];
-Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesNumeric];
-Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
-Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesNumeric];
-Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesNumeric];
-Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesNumeric];
-Print["2222.dat ", QuarticModule[h2^4]/.RulesNumeric];
-Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesNumeric];
-Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesNumeric];
-Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesNumeric];
-Print["3333.dat ", QuarticModule[h3^4]/.RulesNumeric]; 
+Print["1111.dat ", QuarticModule[h1^4]/.RulesCouplings];
+Print["1112.dat ", QuarticModule[h1^3*h2]/.RulesCouplings];
+Print["1113.dat ", QuarticModule[h1^3*h3]/.RulesCouplings];
+Print["1122.dat ", QuarticModule[h1^2*h2^2]/.RulesCouplings];
+Print["1123.dat ", QuarticModule[h1^2*h2*h3]/.RulesCouplings];
+Print["1133.dat ", QuarticModule[h1^2*h3^2]/.RulesCouplings];
+Print["1222.dat ", QuarticModule[h1*h3^3]/.RulesCouplings];
+Print["1223.dat ", QuarticModule[h1*h2^2*h3]/.RulesCouplings];
+Print["1233.dat ", QuarticModule[h1*h2*h3^2]/.RulesCouplings];
+Print["1333.dat ", QuarticModule[h1*h3^3]/.RulesCouplings];
+Print["2222.dat ", QuarticModule[h2^4]/.RulesCouplings];
+Print["2223.dat ", QuarticModule[h2^3*h3]/.RulesCouplings];
+Print["2233.dat ", QuarticModule[h2^2*h3^2]/.RulesCouplings];
+Print["2333.dat ", QuarticModule[h2*h3^3]/.RulesCouplings];
+Print["3333.dat ", QuarticModule[h3^4]/.RulesCouplings]; 
 Print[""];
+*)
 Print["**************************************************************************************************************"];
 Print["*********************************************GENERATING .DAT FILES FOR UCF APPS*******************************"];
 Print["**************************************************************************************************************"];
@@ -336,29 +338,29 @@ baseDir = FileNameJoin[{
 exportCouplingData[fileName_String, expr_] := 
  Export[FileNameJoin[{baseDir, fileName}], expr];
  
-exportCouplingData["111_nonlinear.dat", CubicModule[h1^3] /. RulesNumeric];
-exportCouplingData["112_nonlinear.dat", CubicModule[h1^2*h2] /. RulesNumeric];
-exportCouplingData["113_nonlinear.dat", CubicModule[h1^2*h3] /. RulesNumeric];
-exportCouplingData["122_nonlinear.dat", CubicModule[h1*h2^2] /. RulesNumeric];
-exportCouplingData["123_nonlinear.dat", CubicModule[h1*h2*h3] /. RulesNumeric];
-exportCouplingData["133_nonlinear.dat", CubicModule[h1*h3^2] /. RulesNumeric];
-exportCouplingData["222_nonlinear.dat", CubicModule[h2^3] /. RulesNumeric];
-exportCouplingData["223_nonlinear.dat", CubicModule[h2^2*h3] /. RulesNumeric];
-exportCouplingData["233_nonlinear.dat", CubicModule[h2*h3^2] /. RulesNumeric];
-exportCouplingData["333_nonlinear.dat", CubicModule[h3^3] /. RulesNumeric];
+exportCouplingData["111_nonlinear.dat", CubicModule[h1^3] /. RulesCouplings];
+exportCouplingData["112_nonlinear.dat", CubicModule[h1^2*h2] /. RulesCouplings];
+exportCouplingData["113_nonlinear.dat", CubicModule[h1^2*h3] /. RulesCouplings];
+exportCouplingData["122_nonlinear.dat", CubicModule[h1*h2^2] /.RulesCouplings];
+exportCouplingData["123_nonlinear.dat", CubicModule[h1*h2*h3] /.RulesCouplings];
+exportCouplingData["133_nonlinear.dat", CubicModule[h1*h3^2] /. RulesCouplings];
+exportCouplingData["222_nonlinear.dat", CubicModule[h2^3] /. RulesCouplings];
+exportCouplingData["223_nonlinear.dat", CubicModule[h2^2*h3] /.RulesCouplings];
+exportCouplingData["233_nonlinear.dat", CubicModule[h2*h3^2] /. RulesCouplings];
+exportCouplingData["333_nonlinear.dat", CubicModule[h3^3] /. RulesCouplings];
 
-exportCouplingData["1111_nonlinear.dat", QuarticModule[h1^4] /. RulesNumeric];
-exportCouplingData["1112_nonlinear.dat", QuarticModule[h1^3*h2] /. RulesNumeric];
-exportCouplingData["1113_nonlinear.dat", QuarticModule[h1^3*h3] /. RulesNumeric];
-exportCouplingData["1122_nonlinear.dat", QuarticModule[h1^2*h2^2] /. RulesNumeric];
-exportCouplingData["1123_nonlinear.dat", QuarticModule[h1^2*h2*h3] /. RulesNumeric];
-exportCouplingData["1133_nonlinear.dat", QuarticModule[h1^2*h3^2] /. RulesNumeric];
-exportCouplingData["1222_nonlinear.dat", QuarticModule[h1*h2^3] /. RulesNumeric];
-exportCouplingData["1223_nonlinear.dat", QuarticModule[h1*h2^2*h3] /. RulesNumeric];
-exportCouplingData["1233_nonlinear.dat", QuarticModule[h1*h2*h3^2] /. RulesNumeric];
-exportCouplingData["1333_nonlinear.dat", QuarticModule[h1*h3^3] /. RulesNumeric];
-exportCouplingData["2222_nonlinear.dat", QuarticModule[h2^4] /. RulesNumeric];
-exportCouplingData["2223_nonlinear.dat", QuarticModule[h2^3*h3] /. RulesNumeric];
-exportCouplingData["2233_nonlinear.dat", QuarticModule[h2^2*h3^2] /. RulesNumeric];
-exportCouplingData["2333_nonlinear.dat", QuarticModule[h2*h3^3] /. RulesNumeric];
-exportCouplingData["3333_nonlinear.dat", QuarticModule[h3^4] /. RulesNumeric];
+exportCouplingData["1111_nonlinear.dat", QuarticModule[h1^4] /. RulesCouplings];
+exportCouplingData["1112_nonlinear.dat", QuarticModule[h1^3*h2] /. RulesCouplings];
+exportCouplingData["1113_nonlinear.dat", QuarticModule[h1^3*h3] /. RulesCouplings];
+exportCouplingData["1122_nonlinear.dat", QuarticModule[h1^2*h2^2] /. RulesCouplings];
+exportCouplingData["1123_nonlinear.dat", QuarticModule[h1^2*h2*h3] /.RulesCouplings];
+exportCouplingData["1133_nonlinear.dat", QuarticModule[h1^2*h3^2] /. RulesCouplings];
+exportCouplingData["1222_nonlinear.dat", QuarticModule[h1*h2^3] /. RulesCouplings];
+exportCouplingData["1223_nonlinear.dat", QuarticModule[h1*h2^2*h3] /. RulesCouplings];
+exportCouplingData["1233_nonlinear.dat", QuarticModule[h1*h2*h3^2] /.RulesCouplings];
+exportCouplingData["1333_nonlinear.dat", QuarticModule[h1*h3^3] /. RulesCouplings];
+exportCouplingData["2222_nonlinear.dat", QuarticModule[h2^4] /.RulesCouplings];
+exportCouplingData["2223_nonlinear.dat", QuarticModule[h2^3*h3] /. RulesCouplings];
+exportCouplingData["2233_nonlinear.dat", QuarticModule[h2^2*h3^2] /.RulesCouplings];
+exportCouplingData["2333_nonlinear.dat", QuarticModule[h2*h3^3] /. RulesCouplings];
+exportCouplingData["3333_nonlinear.dat", QuarticModule[h3^4] /. RulesCouplings];
