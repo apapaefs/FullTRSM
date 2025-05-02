@@ -152,22 +152,22 @@ Rnum={{c1*c2,-s1*c2,-s2},{s1*c3-c1*s2*s3,c1*c3+s1*s2*s3,-c2*s3},{c1*s2*c3+s1*s3,
 
 (*Symbols to represent couplings for .dat files*)
 
-K1 = Symbol["K3"]; (*\[Lambda]_sx*)
-K2 = Symbol["K4"]; (*\[Lambda]_ssx*)
-K3 = Symbol["K5"]; (*\[Lambda]_sxx*)
-K4 = Symbol["K6"]; (*\[Lambda]_hhx*)
-K5 = Symbol["K7"]; (*\[Lambda]_hhs*)
-K6 = Symbol["K8"]; (*\[Lambda]_sssx*)
-K7 = Symbol["K9"]; (*\[Lambda]_sxxx*)
-K8 = Symbol["K10"]; (*\[Lambda]_xxxx*)
-K9 = Symbol["K11"]; (*\[Lambda]_ssss*)
-K10 = Symbol["K12"]; (*\[Lambda]_hhsx*)
-K11 = Symbol["K13"]; (*\[Lambda]_sss*)
-K12 = Symbol["K14"]; (*\[Lambda]_xxx*)
-K13 = Symbol["K15"]; (*\[Lambda]_hh*)
-K14 = Symbol["K16"]; (*\[Lambda]_hhss*)
-K15 = Symbol["K17"]; (*\[Lambda]_hhxx*)
-K16 = Symbol["K18"]; (*\[Lambda]_ssxx*)
+K1 = Symbol["K1"]; (*\[Lambda]_sx*)
+K2 = Symbol["K2"]; (*\[Lambda]_ssx*)
+K3 = Symbol["K3"]; (*\[Lambda]_sxx*)
+K4 = Symbol["K4"]; (*\[Lambda]_hhx*)
+K5 = Symbol["K5"]; (*\[Lambda]_hhs*)
+K6 = Symbol["K6"]; (*\[Lambda]_sssx*)
+K7 = Symbol["K7"]; (*\[Lambda]_sxxx*)
+K8 = Symbol["K8"]; (*\[Lambda]_xxxx*)
+K9 = Symbol["K9"]; (*\[Lambda]_ssss*)
+K10 = Symbol["K10"]; (*\[Lambda]_hhsx*)
+K11 = Symbol["K11"]; (*\[Lambda]_sss*)
+K12 = Symbol["K12"]; (*\[Lambda]_xxx*)
+K13 = Symbol["K13"]; (*\[Lambda]_hh*)
+K14 = Symbol["K14"]; (*\[Lambda]_hhss*)
+K15 = Symbol["K15"]; (*\[Lambda]_hhxx*)
+K16 = Symbol["K16"]; (*\[Lambda]_ssxx*)
 
 ReplaceThetah = c1*c2;
 ReplaceThetaS = c1*c3+s1*s2*s3;
@@ -179,7 +179,7 @@ RulesCouplings={Subscript[v, s]->ReplaceVs,
 Subscript[v, x]->ReplaceVx,
 Subscript[\[CapitalTheta], h] -> ReplaceThetah,
 Subscript[\[CapitalTheta], s] -> ReplaceThetaS,
-Subscript[\[CapitalTheta], x] -> ReplaceThetaX
+Subscript[\[CapitalTheta], x] -> ReplaceThetaX,
 Subscript[\[Lambda], sx]-> K1,
 Subscript[\[Lambda], ssx]-> K2,
 Subscript[\[Lambda], sxx]-> K3,
@@ -268,7 +268,7 @@ Print["333.dat: ", CubicModule[h3^3]];
 Print[""]; 
 
 Print["**************************************************************************************************************"]
-
+*)
 Print["CUBIC COUPLINGS USING CubicModel MODEL EVALUATED AT BENCHMARK SCENARIOS: "]
 
 Print["111.dat: ", CubicModule[h1^3]/.RulesCouplings]; 
@@ -281,7 +281,7 @@ Print["222.dat: ", CubicModule[h2^3]/.RulesCouplings];
 Print["223.dat: ", CubicModule[h2^2 * h3]/.RulesCouplings];
 Print["233.dat: ", CubicModule[h2*h3^2]/.RulesCouplings]; 
 Print["333.dat: ", CubicModule[h3^3]/.RulesCouplings]; 
-Print[""]; 
+Print[""]; (*
 Print["**************************************************************************************************************"]
 Print["******************************************QUARTIC COUPLINGS****************************************************"]
 Print["**************************************************************************************************************"]
