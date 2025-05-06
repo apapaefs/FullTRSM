@@ -2,11 +2,54 @@ import numpy as np
 import Higgs.predictions as HP
 import Higgs.bounds as HB
 import Higgs.signals as HS
+
 pred = HP.Predictions()
 PC = 'FTRSM/Parameter_Cards/Corine_TRSM_SSX_PC.dat'
 bounds = HB.Bounds("/home/cmsphysics/higgstools/HBdata")
 signals = HS.Signals("/home/cmsphysics/higgstools/HSdata")
+
+#Check if model is in HiggsBound or if it is excluded 
+#Check if model is model fit with LHC (HiggsSignal)
+def run_higgsbounds(hb_path, input_dir):
+    result = subprocess.run([hb_path, 'LandH', '3', input_dir], capture_output=True, text=True) #Experimental exclusion data LEP and LHC HB
+    print(result.stdout)
+
+def run_higgssignals(hs_path, input_dir):
+    result = subprocess.run([hs_path, 'Results', '3', input_dir], capture_output=True, text=True) #LHC signal strength data latest results HS
+    print(result.stdout)
+
+masses = np.linspace(100, 600, 50)
+enhancements = []
+sigma_SM_hhh = 0.1  # fb, approximate SM triple Higgs production at 13 TeV
+
+# Function to read and parse the parameter card (.dat file)
+def read_param_card(file_path):
+    parameters = {}
+
+    # Open the parameter card file
+    with open(file_path, 'r') as f:
+        file_contents = f.read()
+        print("File contents:\n", file_contents)  # Print the contents of the file to check
+        f.seek(0)
+
+        for line in f:
+            # Skip empty lines and comments (lines starting with "#")
+            if line.strip() == "" or line.startswith("#"):
+                continue
+            
+            # Use regular expression to match key-value pairs (e.g., key = value)
+            match = re.match(r'(\w+)\s*=\s*(\S+)', line.strip())
+            if match:
+                key, value = match.groups()
+                parameters[key] = float(value)  # Convert the value to float and store it
+
+    return parameters
+
+file_path = 'Parameter_Cards/Corine_TRSM_SSX_PC.dat'
+#params = read_param_card(file_path)
+
 #FROM TRSM + SSX PARAMETER CARD 
+#ChiSquare Calculations 
 #h1
 h1 = pred.addParticle(HP.NeutralScalar("h1", "even"))
 h1.setMass(125.09)  # Mass SM-Higgs
@@ -14,7 +57,7 @@ decay_width_h1 = 0.0038110045676034245
 h1.setDecayWidth("h1", "h1", decay_width_h1)
 #h1.setDecayWidth("h1",0.0038110045676034245)  # Width SM-Higgs 
 HP.effectiveCouplingInput(h1, HP.smLikeEffCouplings)
-#h2 
+#h2
 h2 = pred.addParticle(HP.NeutralScalar("h2","even"))
 h2.setMass(263) #Mass Higgs-Like Boson M2
 decay_width_h2 = 0.12028982767301252
@@ -26,6 +69,7 @@ h3.setMass(455) #Mass Higgs-Like Boson M3
 decay_width_h3 = 7.510553931822905
 h3.setDecayWidth("h3", "h3", decay_width_h3) # Width Higgs-Like Boson M3
 HP.effectiveCouplingInput(h3, HP.smLikeEffCouplings)
+
 chisqSM = signals(pred)
 # evaluate HiggsBounds
 hbresult = bounds(pred)
